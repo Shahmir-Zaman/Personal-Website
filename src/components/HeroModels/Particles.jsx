@@ -9,11 +9,11 @@ const Particles = ({ count = 200 }) => {
     for (let i = 0; i < count; i++) {
       temp.push({
         position: [
-          (Math.random() - 0.5) * 10,
-          Math.random() * 10 + 5, // higher starting point
-          (Math.random() - 0.5) * 10,
+          (Math.random() - 0.5) * 40, // Much wider spread for full width
+          Math.random() * 20 + 10, // Higher and more varied starting points
+          (Math.random() - 0.5) * 30, // Deeper Z range
         ],
-        speed: 0.005 + Math.random() * 0.001,
+        speed: 0.005 + Math.random() * 0.003, // Slightly more varied speed
       });
     }
     return temp;
@@ -24,7 +24,12 @@ const Particles = ({ count = 200 }) => {
     for (let i = 0; i < count; i++) {
       let y = positions[i * 3 + 1];
       y -= particles[i].speed;
-      if (y < -2) y = Math.random() * 10 + 5;
+      if (y < -5) {
+        y = Math.random() * 20 + 10; // Reset to higher position
+        // Also randomize X position when resetting for more variety
+        positions[i * 3] = (Math.random() - 0.5) * 40;
+        positions[i * 3 + 2] = (Math.random() - 0.5) * 30;
+      }
       positions[i * 3 + 1] = y;
     }
     mesh.current.geometry.attributes.position.needsUpdate = true;
