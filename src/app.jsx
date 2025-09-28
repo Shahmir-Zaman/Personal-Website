@@ -4,7 +4,7 @@ import { Canvas } from '@react-three/fiber'
 import Particles from './components/HeroModels/Particles.jsx'
 import { useMediaQuery } from 'react-responsive'
 import NavBar from './components/NavBar.jsx'
-import LogoSection from './components/LogoSection.jsx'
+import LogoSection from './sections/LogoSection.jsx'
 import FeatureCards from './sections/FeatureCards.jsx'
 
 const App = () => {

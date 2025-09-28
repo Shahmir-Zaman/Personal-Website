@@ -63,21 +63,37 @@ const logoIconsList = [
 
 const abilities = [
   {
-    imgPath: "/images/seo.png",
-    title: "Quality Focus",
-    desc: "Delivering high-quality results while maintaining attention to every detail.",
+    imgPath: "/images/code.png",
+    title: "Full-Stack Development",
+    desc: "Designing and building end-to-end applications with MERN, REST APIs, and responsive UIs using clean, scalable code.",
   },
   {
-    imgPath: "/images/chat.png",
-    title: "Reliable Communication",
-    desc: "Keeping you updated at every step to ensure transparency and clarity.",
+    imgPath: "/images/ai.png",
+    title: "AI & Automation",
+    desc: "Integrating AI-powered features and orchestrating workflows with APIs, LLMs, and tools like n8n for smarter solutions.",
   },
   {
-    imgPath: "/images/time.png",
-    title: "On-Time Delivery",
-    desc: "Making sure projects are completed on schedule, with quality & attention to detail.",
+    imgPath: "/images/cloud.png",
+    title: "Cloud Deployment",
+    desc: "Deploying and managing applications on AWS & GCP with CI/CD pipelines, DNS, and SSL for production-ready reliability.",
+  },
+  {
+    imgPath: "/images/db.png",
+    title: "Database Design",
+    desc: "Structuring and managing data with MySQL, PostgreSQL, Prisma, and MongoDB for robust, efficient storage solutions.",
+  },
+  {
+    imgPath: "/images/problem.png",
+    title: "Problem-Solving",
+    desc: "Breaking down complex challenges with creativity and logic to deliver efficient, reliable, and innovative results.",
+  },
+  {
+    imgPath: "/images/team.png",
+    title: "Collaboration & Communication",
+    desc: "Thriving in team environments by sharing knowledge, listening actively, and ensuring transparency in every project.",
   },
 ];
+
 
 const techStackImgs = [
   {
