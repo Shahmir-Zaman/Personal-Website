@@ -6,7 +6,7 @@ import gsap from 'gsap'
 
 const Hero = () => {
   useGSAP(() => {
-    gsap.fromTo('.hero-text h1', 
+    gsap.fromTo('.hero-text h1',
       {
         y: 50,
         opacity: 0
@@ -24,16 +24,16 @@ const Hero = () => {
   return (
     <section id='hero' className='relative overflow-hidden'>
       {/* Background Image */}
-      <div className='absolute top-0 left-0 z-10'>
-        <img src="/images/bg.png" alt="background" />
+      <div className='absolute top-0 left-0 z-10 '>
+        <img src="/images/bg.png" alt="background" className="w-full h-full object-cover scale-150" />
       </div>
 
       <div className='hero-layout'>
-        
+
         {/* LEFT: HERO CONTENT */}
         <header className='flex flex-col justify-center md:w-full w-screen md:px-20 px-5'>
           <div className='flex flex-col gap-7'>
-            
+
             {/* Hero Text with Animation */}
             <div className='hero-text'>
               <h1>
@@ -41,8 +41,8 @@ const Hero = () => {
                 <span className="slide">
                   <span className="wrapper">
                     {words.map((word) => (
-                      <span 
-                        key={word.text} 
+                      <span
+                        key={word.text}
                         className="flex items-center md:gap-2 gap-1 pb-2"
                       >
                         <img
@@ -73,7 +73,7 @@ const Hero = () => {
               id="button"
               text="See My Work"
             />
-            
+
           </div>
         </header>
 
@@ -83,7 +83,7 @@ const Hero = () => {
             <HeroExperience />
           </div>
         </figure>
-        
+
       </div>
     </section>
   )

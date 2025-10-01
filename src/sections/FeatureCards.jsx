@@ -3,7 +3,11 @@ import React from 'react'
 
 const FeatureCards = () => {
     return (
-        <div className='w-full padding-x-lg'>
+
+        <div className='w-full padding-x-lg' id='skills'>
+            <h1 className="font-semibold md:text-5xl text-3xl text-center pb-15 pt-7">
+                Skills 🚀
+            </h1>
             <div className='mx-auto grid-3-cols'>
                 {abilities.map(({ imagePath, title, desc }) => (
                     <div key={title} className='card-border rounded-xl p-8 flex flex-col gap-6 hover:scale-105 transition-transform duration-300'>

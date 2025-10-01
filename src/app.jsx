@@ -6,6 +6,8 @@ import { useMediaQuery } from 'react-responsive'
 import NavBar from './components/NavBar.jsx'
 import LogoSection from './sections/LogoSection.jsx'
 import FeatureCards from './sections/FeatureCards.jsx'
+import TechStack from './sections/TechStack.jsx'
+import Experience from './sections/Experience.jsx'
 
 const App = () => {
     const isMobile = useMediaQuery({ query: '(max-width:768px)' })
@@ -25,7 +27,9 @@ const App = () => {
                 <Hero />
                 <ShowcaseSection />
                 <LogoSection/>
+                <TechStack/>
                 <FeatureCards/>
+                <Experience/>
             </div>
         </>
     )
