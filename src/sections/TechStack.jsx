@@ -24,7 +24,7 @@ const TechStack = () => {
         ease: "power2.inOut", // Ease of the animation
         stagger: 0.2, // Stagger the animation by 0.2 seconds
         scrollTrigger: {
-          trigger: "#skills", // Trigger the animation when the user scrolls to the #skills wrapper
+          trigger: "#techstack", // Trigger the animation when the user scrolls to the #skills wrapper
           start: "top center", // Start the animation when the top of the wrapper is at the center of the screen
         },
       }
@@ -32,7 +32,7 @@ const TechStack = () => {
   });
 
   return (
-    <div id="techstack" className="flex-center section-padding">
+    <div id="techstack" className="flex-center px-5 md:px-10 md:mt-16 mt-10">
       <div className="w-full h-full md:px-10 px-5">
         <TitleHeader
           title="How I Can Contribute & My Key Skills"

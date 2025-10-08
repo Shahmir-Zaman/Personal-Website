@@ -27,11 +27,11 @@ const App = () => {
             <div className="relative z-10">
                 <NavBar />
                 <Hero />
-                <ShowcaseSection />
-                <LogoSection />
                 <TechStack />
-                <FeatureCards />
                 <Experience />
+                <ShowcaseSection />
+                <FeatureCards />
+                <LogoSection />
                 <Contact/>
                 <Footer/>
             </div>

@@ -74,11 +74,16 @@ const Hero = () => {
               text="See My Work"
             />
 
+            {/* 3D SCENE - MOBILE/TABLET (below button on smaller screens) */}
+            <div className="xl:hidden w-full h-[50vh] mt-8">
+              <HeroExperience />
+            </div>
+
           </div>
         </header>
 
-        {/* RIGHT: HERO 3D SCENE */}
-        <figure>
+        {/* RIGHT: HERO 3D SCENE - DESKTOP ONLY */}
+        <figure className="hidden xl:block">
           <div className='hero-3d-layout mt-2 w-250'>
             <HeroExperience />
           </div>

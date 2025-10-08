@@ -1,12 +1,17 @@
 const navLinks = [
+    {
+    name: 'Tech Stack',
+    link: '#techstack',
+  },
+    {
+    name: 'Experience',
+    link: '#experience',
+  },
   {
     name: 'Projects',
     link: '#projects',
   },
-  {
-    name: 'Tech Stack',
-    link: '#techstack',
-  },
+
   {
     name: 'Skills',
     link: '#skills',
@@ -153,37 +158,37 @@ const techStackIcons = [
 
 const expCards = [
   {
-    title: "AI-Enhanced Note-Taking App (Notery)",
-    imgPath: "/images/experience/notery.jpg",
-    logoPath: "/images/logos/Notery_Logo_Light.png",
+    title: 'AI-Enhanced Note-Taking App (Notery)',
+    imgPath: '/images/experience/notery.jpg',
+    logoPath: '/images/logos/Notery_Logo_Light.png',
     responsibilities: [
-      "Developed a server-rendered note app with Next.js (App Router), React, and TypeScript.",
-      "Designed a relational schema with Prisma and Supabase PostgreSQL, exposing typesafe RESTful CRUD APIs.",
-      "Integrated the OpenAI API to auto-generate contextual responses, persisted alongside user notes.",
-      "Built an accessible, responsive UI with Tailwind CSS, shadcn/ui, and Radix components."
-    ]
-  },
-    {
-    title: "Full-Stack Listing Platform (RoamAura)",
-    imgPath: "/images/experience/roamaura.jpg",
-    logoPath: "/images/logos/Roamaura.svg",
-    responsibilities: [
-      "Architected a server-rendered fullstack platform with Node.js, Express, MongoDB, and EJS templates.",
-      "Developed a RESTful backend with modular controllers and routes for property listings and user management.",
-      "Implemented Passport.js authentication with express-session and connect-mongo for secure sessions.",
-      "Validated Mongoose schemas and built Joi-based middleware for robust input handling."
-    ]
+      'Developed a server-rendered note app with Next.js (App Router), React, and TypeScript.',
+      'Designed a relational schema with Prisma and Supabase PostgreSQL, exposing typesafe RESTful CRUD APIs.',
+      'Integrated the OpenAI API to auto-generate contextual responses, persisted alongside user notes.',
+      'Built an accessible, responsive UI with Tailwind CSS, shadcn/ui, and Radix components.',
+    ],
   },
   {
-    title: "AI Document Summarizer (SumAI)",
-    imgPath: "/images/experience/sumai.jpg",
-    logoPath: "/images/logos/SumAI.png",
+    title: 'Full-Stack Listing Platform (RoamAura)',
+    imgPath: '/images/experience/roamaura.jpg',
+    logoPath: '/images/logos/Roamaura.svg',
     responsibilities: [
-      "Architected a fullstack AI document summarizer with React, TypeScript, Vite, and Tailwind CSS.",
-      "Deployed & orchestrated a self-hosted n8n workflow on GCP for automated PDF/TXT processing and summarization with Llama 3.2.",
-      "Integrated drag-and-drop uploads, file validation, and progress tracking with React Context + useReducer.",
-      "Hardened the pipeline for scalability and reliability, streamlining end-to-end AI document processing."
-    ]
+      'Architected a server-rendered fullstack platform with Node.js, Express, MongoDB, and EJS templates.',
+      'Developed a RESTful backend with modular controllers and routes for property listings and user management.',
+      'Implemented Passport.js authentication with express-session and connect-mongo for secure sessions.',
+      'Validated Mongoose schemas and built Joi-based middleware for robust input handling.',
+    ],
+  },
+  {
+    title: 'AI Document Summarizer (SumAI)',
+    imgPath: '/images/experience/sumai.jpg',
+    logoPath: '/images/logos/SumAI.png',
+    responsibilities: [
+      'Architected a fullstack AI document summarizer with React, TypeScript, Vite, and Tailwind CSS.',
+      'Deployed & orchestrated a self-hosted n8n workflow on GCP for automated PDF/TXT processing and summarization with Llama 3.2.',
+      'Integrated drag-and-drop uploads, file validation, and progress tracking with React Context + useReducer.',
+      'Hardened the pipeline for scalability and reliability, streamlining end-to-end AI document processing.',
+    ],
   },
 ];
 
@@ -200,4 +205,13 @@ const socialImgs = [
   },
 ];
 
-export { words, abilities, logoIconsList, socialImgs, techStackIcons, techStackImgs, navLinks, expCards };
+export {
+  words,
+  abilities,
+  logoIconsList,
+  socialImgs,
+  techStackIcons,
+  techStackImgs,
+  navLinks,
+  expCards,
+};
