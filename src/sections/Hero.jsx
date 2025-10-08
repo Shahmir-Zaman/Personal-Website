@@ -1,5 +1,5 @@
-import Button from '../components/button.jsx'
-import HeroExperience from '../components/HeroModels/HeroExperience.jsx'
+import Button from '../components/Button.jsx'
+import HeroExperience from '../components/Models/HeroModels/HeroExperience.jsx'
 import { words } from '../constants/index.js'
 import { useGSAP } from '@gsap/react'
 import gsap from 'gsap'

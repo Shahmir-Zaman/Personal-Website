@@ -274,7 +274,7 @@ section {
   }
 
   .timeline-wrapper {
-    @apply absolute top-0 xl:left-[35.5vw] md:left-10 left-5 h-full flex justify-center;
+    @apply absolute top-0 xl:left-[21.4vw] md:left-10 left-5 h-full flex justify-center;
   }
 
   .timeline {
@@ -401,7 +401,6 @@ section {
 
 .gradient-line {
   width: 2px;
-  height: 100px;
   background: linear-gradient(
     0deg,
     rgba(69, 222, 196, 0) 0%,

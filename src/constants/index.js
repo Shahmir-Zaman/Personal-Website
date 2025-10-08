@@ -62,32 +62,33 @@ const logoIconsList = [
 
 const abilities = [
   {
-    imgPath: '/images/code.png',
+    imgPath: '/images/Abilities/code.png',
     title: 'Full-Stack Development',
     desc: 'Designing and building end-to-end applications with MERN, REST APIs, and responsive UIs using clean, scalable code.',
   },
   {
-    imgPath: '/images/ai.png',
+    imgPath: '/images/Abilities/ai.png',
     title: 'AI & Automation',
     desc: 'Integrating AI-powered features and orchestrating workflows with APIs, LLMs, and tools like n8n for smarter solutions.',
   },
   {
-    imgPath: '/images/cloud.png',
+    imgPath: '/images/Abilities/cloud.png',
     title: 'Cloud Deployment',
     desc: 'Deploying and managing applications on AWS & GCP with CI/CD pipelines, DNS, and SSL for production-ready reliability.',
   },
   {
-    imgPath: '/images/db.png',
+    imgPath: '/images/Abilities/db.png',
     title: 'Database Design',
     desc: 'Structuring and managing data with MySQL, PostgreSQL, Prisma, and MongoDB for robust, efficient storage solutions.',
+    size: 11, // Larger size for this one
   },
   {
-    imgPath: '/images/problem.png',
+    imgPath: '/images/Abilities/problem.png',
     title: 'Problem-Solving',
     desc: 'Breaking down complex challenges with creativity and logic to deliver efficient, reliable, and innovative results.',
   },
   {
-    imgPath: '/images/team.png',
+    imgPath: '/images/Abilities/team.png',
     title: 'Collaboration & Communication',
     desc: 'Thriving in team environments by sharing knowledge, listening actively, and ensuring transparency in every project.',
   },
@@ -152,17 +153,6 @@ const techStackIcons = [
 
 const expCards = [
   {
-    title: "AI Document Summarizer (SumAI)",
-    imgPath: "/images/experience/sumai.jpg",
-    logoPath: "/images/logos/SumAI.png",
-    responsibilities: [
-      "Architected a fullstack AI document summarizer with React, TypeScript, Vite, and Tailwind CSS.",
-      "Deployed & orchestrated a self-hosted n8n workflow on GCP for automated PDF/TXT processing and summarization with Llama 3.2.",
-      "Integrated drag-and-drop uploads, file validation, and progress tracking with React Context + useReducer.",
-      "Hardened the pipeline for scalability and reliability, streamlining end-to-end AI document processing."
-    ]
-  },
-  {
     title: "AI-Enhanced Note-Taking App (Notery)",
     imgPath: "/images/experience/notery.jpg",
     logoPath: "/images/logos/Notery_Logo_Light.png",
@@ -173,7 +163,7 @@ const expCards = [
       "Built an accessible, responsive UI with Tailwind CSS, shadcn/ui, and Radix components."
     ]
   },
-  {
+    {
     title: "Full-Stack Listing Platform (RoamAura)",
     imgPath: "/images/experience/roamaura.jpg",
     logoPath: "/images/logos/Roamaura.svg",
@@ -183,7 +173,18 @@ const expCards = [
       "Implemented Passport.js authentication with express-session and connect-mongo for secure sessions.",
       "Validated Mongoose schemas and built Joi-based middleware for robust input handling."
     ]
-  }
+  },
+  {
+    title: "AI Document Summarizer (SumAI)",
+    imgPath: "/images/experience/sumai.jpg",
+    logoPath: "/images/logos/SumAI.png",
+    responsibilities: [
+      "Architected a fullstack AI document summarizer with React, TypeScript, Vite, and Tailwind CSS.",
+      "Deployed & orchestrated a self-hosted n8n workflow on GCP for automated PDF/TXT processing and summarization with Llama 3.2.",
+      "Integrated drag-and-drop uploads, file validation, and progress tracking with React Context + useReducer.",
+      "Hardened the pipeline for scalability and reliability, streamlining end-to-end AI document processing."
+    ]
+  },
 ];
 
 const socialImgs = [
