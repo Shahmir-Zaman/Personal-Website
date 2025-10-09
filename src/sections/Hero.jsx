@@ -1,5 +1,7 @@
 import Button from '../components/Button.jsx'
-import HeroExperience from '../components/Models/HeroModels/HeroExperience.jsx'
+import { lazy, Suspense } from 'react'
+
+const HeroExperience = lazy(() => import('../components/Models/HeroModels/HeroExperience.jsx'))
 import { words } from '../constants/index.js'
 import { useGSAP } from '@gsap/react'
 import gsap from 'gsap'
@@ -76,7 +78,11 @@ const Hero = () => {
 
             {/* 3D SCENE - MOBILE/TABLET (below button on smaller screens) */}
             <div className="xl:hidden w-full h-[50vh] mt-8">
-              <HeroExperience />
+              <Suspense fallback={<div className="w-full h-full bg-black-100 rounded-lg flex items-center justify-center">
+                <div className="text-white-50">Loading 3D Scene...</div>
+              </div>}>
+                <HeroExperience />
+              </Suspense>
             </div>
 
           </div>
@@ -85,7 +91,11 @@ const Hero = () => {
         {/* RIGHT: HERO 3D SCENE - DESKTOP ONLY */}
         <figure className="hidden xl:block">
           <div className='hero-3d-layout mt-2 w-250'>
-            <HeroExperience />
+            <Suspense fallback={<div className="w-full h-full bg-black-100 rounded-lg flex items-center justify-center">
+              <div className="text-white-50">Loading 3D Scene...</div>
+            </div>}>
+              <HeroExperience />
+            </Suspense>
           </div>
         </figure>
 

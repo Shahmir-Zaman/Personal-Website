@@ -68,7 +68,7 @@ const ShowcaseSection = () => {
                         {/* Left - Featured Project */}
                         <div className='first-project-wrapper' ref={project1Ref}>
                             <div className='image-wrapper'>
-                                <img src="/images/project1.png" alt="Notery" />
+                                <img src="/images/project1.png" alt="Notery" loading="lazy" />
                             </div>
 
                             <div className='text-content'>
@@ -100,7 +100,7 @@ const ShowcaseSection = () => {
                             {/* Project 2 - SumAI */}
                             <div className='project !rounded-xl overflow-hidden' ref={project2Ref}>
                                 <div className='image-wrapper !rounded-xl overflow-hidden'>
-                                    <img src="/images/project2.png" alt="SumAI" className="!rounded-xl w-full h-full object-cover" />
+                                    <img src="/images/project2.png" alt="SumAI" className="!rounded-xl w-full h-full object-cover" loading="lazy" />
                                 </div>
 
                                 <div className='text-content'>
@@ -130,7 +130,7 @@ const ShowcaseSection = () => {
                             {/* Project 3 - RoamAura */}
                             <div className='project !rounded-xl overflow-hidden' ref={project3Ref}>
                                 <div className='image-wrapper !rounded-xl overflow-hidden'>
-                                    <img src="/images/project3.png" alt="RoamAura" className="!rounded-xl w-full h-full object-cover" />
+                                    <img src="/images/project3.png" alt="RoamAura" className="!rounded-xl w-full h-full object-cover" loading="lazy" />
                                 </div>
 
                                 <div className='text-content'>
