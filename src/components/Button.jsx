@@ -5,13 +5,12 @@ const Button = ({ text, className, id }) => {
     <a
       onClick={(e) => {
         e.preventDefault();
-        const target = document.getElementById(projects)
-        if (target && id) {
+        const target = document.getElementById("projects");
+        if (target) {
           const offset = window.innerHeight * 0.15;
           const top = target.getBoundingClientRect().top + window.scrollY - offset;
           window.scrollTo({ top, behavior: 'smooth' });
         }
-
       }}
       className={`${className ?? ''} cta-wrapper`}>
       <div className='cta-button group'>
