@@ -1,36 +1,43 @@
-import Spline from '@splinetool/react-spline';
-import { useMediaQuery } from 'react-responsive';
+import { OrbitControls } from "@react-three/drei";
+import { Canvas } from "@react-three/fiber";
+import { useMediaQuery } from "react-responsive";
+import { Suspense } from "react";
 
-export default function App() {
-  const isMobile = useMediaQuery({ query: '(max-width: 1279px)' }); // xl breakpoint
+import { Room } from "./Room";
+import HeroLights from "./HeroLights";
+import Particles from "./Particles";
 
-  function onLoad(splineApp) {
-    const camera = splineApp.findObjectByName('Camera');
-
-    if (camera) {
-      if (isMobile) {
-        // Mobile/Tablet settings - zoom out more
-        camera.position.x = 0;
-        camera.position.y = 3000;  // Higher up
-        camera.position.z = 15; // Much further back
-        camera.fov = 50;           // Narrower field of view
-      } else {
-        // Desktop settings - original positioning
-        camera.position.x = 0;
-        camera.position.y = 500;
-        camera.position.z = 12000;
-        camera.fov = 75;
-      }
-      
-      camera.updateProjectionMatrix();
-      splineApp.setCamera(camera);
-    }
-  }
+const HeroExperience = () => {
+  const isMobile = useMediaQuery({ query: "(max-width: 768px)" });
+  const isTablet = useMediaQuery({ query: "(max-width: 1024px)" });
 
   return (
-      <Spline 
-        scene="https://prod.spline.design/0CooTkPx85Ec3XZH/scene.splinecode" 
-        onLoad={onLoad}
+    <Canvas camera={{ position: [0, 0, 12], fov: 45 }}>
+      {/* deep blue ambient */}
+      <ambientLight intensity={0.2} color="#1a1a40" />
+      {/* Configure OrbitControls to disable panning and control zoom based on device type */}
+      <OrbitControls
+        enablePan={false} // Prevents panning of the scene
+        enableZoom={!isTablet} // Disables zoom on tablets
+        maxDistance={30} // Maximum distance for zooming out
+        minDistance={5} // Minimum distance for zooming in
+        minPolarAngle={Math.PI / 5} // Minimum angle for vertical rotation
+        maxPolarAngle={Math.PI / 2} // Maximum angle for vertical rotation
       />
+
+      <Suspense fallback={null}>
+        <HeroLights />
+        <Particles count={100} />
+        <group
+          scale={isMobile ? 0.7 : 1}
+          position={[0, -3.5, 0]}
+          rotation={[0, -Math.PI / 4, 0]}
+        >
+          <Room />
+        </group>
+      </Suspense>
+    </Canvas>
   );
-}
+};
+
+export default HeroExperience;

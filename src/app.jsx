@@ -32,8 +32,8 @@ const App = () => {
                 <ShowcaseSection />
                 <FeatureCards />
                 <LogoSection />
-                <Contact/>
-                <Footer/>
+                <Contact />
+                <Footer />
             </div>
         </>
     )
