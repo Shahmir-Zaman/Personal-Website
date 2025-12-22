@@ -1,12 +1,22 @@
 <div id="top">
 
 <!-- HEADER STYLE: COMPACT -->
+<<<<<<< HEAD
 <img src="readmeai/assets/logos/purple.svg" width="30%" align="left" style="margin-right: 15px">
 
 # MAIN WEBSITE
 <em></em>
 
 <!-- BADGES -->
+=======
+<div align="center">
+<img src="public/favicon.png" width="150px">
+<h1>Personal Website</h1>
+</div>
+
+<!-- BADGES -->
+
+>>>>>>> 458a460d89d01cee041cc46b3e60f6411fd5a61e
 <!-- local repository, no metadata badges. -->
 
 <em>Built with the tools and technologies:</em>
@@ -16,20 +26,33 @@
 <img src="https://img.shields.io/badge/Autoprefixer-DD3735.svg?style=flat-square&logo=Autoprefixer&logoColor=white" alt="Autoprefixer">
 <img src="https://img.shields.io/badge/PostCSS-DD3A0A.svg?style=flat-square&logo=PostCSS&logoColor=white" alt="PostCSS">
 <img src="https://img.shields.io/badge/JavaScript-F7DF1E.svg?style=flat-square&logo=JavaScript&logoColor=black" alt="JavaScript">
+<<<<<<< HEAD
 <br>
+=======
+
+
+
+>>>>>>> 458a460d89d01cee041cc46b3e60f6411fd5a61e
 <img src="https://img.shields.io/badge/React-61DAFB.svg?style=flat-square&logo=React&logoColor=black" alt="React">
 <img src="https://img.shields.io/badge/Vite-646CFF.svg?style=flat-square&logo=Vite&logoColor=white" alt="Vite">
 <img src="https://img.shields.io/badge/ESLint-4B32C3.svg?style=flat-square&logo=ESLint&logoColor=white" alt="ESLint">
 <img src="https://img.shields.io/badge/CSS-663399.svg?style=flat-square&logo=CSS&logoColor=white" alt="CSS">
+<<<<<<< HEAD
 
 <br clear="left"/>
 
 ## ☀️ Table of Contents
+=======
+<br clear="left"/>
+<br>
+☀️ Table of Contents
+>>>>>>> 458a460d89d01cee041cc46b3e60f6411fd5a61e
 
 - [☀ ️ Table of Contents](#-table-of-contents)
 - [🌞 Overview](#-overview)
 - [🔥 Features](#-features)
 - [🌅 Project Structure](#-project-structure)
+<<<<<<< HEAD
     - [🌄 Project Index](#-project-index)
 - [🚀 Getting Started](#-getting-started)
     - [🌟 Prerequisites](#-prerequisites)
@@ -40,6 +63,9 @@
 - [🤝 Contributing](#-contributing)
 - [📜 License](#-license)
 - [✨ Acknowledgments](#-acknowledgments)
+=======
+- [📜 License](#-license)
+>>>>>>> 458a460d89d01cee041cc46b3e60f6411fd5a61e
 
 ---
 
@@ -47,8 +73,11 @@
 
 
 
+<<<<<<< HEAD
 ---
 
+=======
+>>>>>>> 458a460d89d01cee041cc46b3e60f6411fd5a61e
 ## 🔥 Features
 
 |      | Component       | Details |
@@ -68,6 +97,7 @@
     ├── eslint.config.js
     ├── index.html
     ├── jsconfig.json
+<<<<<<< HEAD
     ├── node_modules
     │   ├── .bin
     │   ├── .package-lock.json
@@ -278,6 +308,8 @@
     │   ├── yallist
     │   ├── yocto-queue
     │   └── zustand
+=======
+>>>>>>> 458a460d89d01cee041cc46b3e60f6411fd5a61e
     ├── package-lock.json
     ├── package.json
     ├── public
@@ -297,6 +329,7 @@
     └── vite.config.js
 ```
 
+<<<<<<< HEAD
 ### 🌄 Project Index
 
 <details open>
@@ -757,10 +790,13 @@ npm test
 </p>
 </details>
 
+=======
+>>>>>>> 458a460d89d01cee041cc46b3e60f6411fd5a61e
 ---
 
 ## 📜 License
 
+<<<<<<< HEAD
 Main website is protected under the [LICENSE](https://choosealicense.com/licenses) License. For more details, refer to the [LICENSE](https://choosealicense.com/licenses/) file.
 
 ---
@@ -768,6 +804,12 @@ Main website is protected under the [LICENSE](https://choosealicense.com/license
 ## ✨ Acknowledgments
 
 - Credit `contributors`, `inspiration`, `references`, etc.
+=======
+Persoanl Website is protected under the [LICENSE](https://choosealicense.com/licenses) License. For more details, refer to the [LICENSE](https://choosealicense.com/licenses/) file.
+
+---
+
+>>>>>>> 458a460d89d01cee041cc46b3e60f6411fd5a61e
 
 <div align="right">
 

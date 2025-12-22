@@ -38,7 +38,14 @@ const NavBar = () => {
           <ul>
             {navLinks.map(({ link, name }) => (
               <li key={name} className='group'>
-                <a href={link}>
+                <a 
+                  href={link}
+                  className="block transform transition-transform duration-300 hover:scale-105"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    document.querySelector(link)?.scrollIntoView({ behavior: 'smooth' });
+                  }}
+                >
                   <span>{name}</span>
                   <span className="underline" />
                 </a>
