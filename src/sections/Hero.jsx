@@ -5,9 +5,26 @@ const HeroExperience = lazy(() => import('../components/Models/HeroModels/HeroEx
 import { words } from '../constants/index.js'
 import { useGSAP } from '@gsap/react'
 import gsap from 'gsap'
+import AvatarWidget from '../components/AvatarWidget.jsx'
+import { useState } from 'react'
+import { ScrollTrigger } from 'gsap/ScrollTrigger'
+
+gsap.registerPlugin(ScrollTrigger);
 
 const Hero = () => {
+    const [isWidget, setIsWidget] = useState(false);
+
     useGSAP(() => {
+        ScrollTrigger.create({
+            trigger: "#hero",
+            // onLeave fires when the 'end' marker passes the scroller-end marker.
+            // When the bottom of the #hero section hits 70% down from the top of the screen:
+            start: "top top",
+            end: "bottom 70%",
+            onLeave: () => setIsWidget(true),
+            onEnterBack: () => setIsWidget(false),
+        });
+
         gsap.fromTo('.hero-text h1',
             {
                 y: 50,
@@ -17,7 +34,7 @@ const Hero = () => {
                 y: 0,
                 opacity: 1,
                 stagger: 0.2,
-                durations: 1,
+                duration: 1,
                 ease: 'power2.inOut'
             }
         )
@@ -81,7 +98,7 @@ const Hero = () => {
                             <Suspense fallback={<div className="w-full h-full bg-black-100 rounded-lg flex items-center justify-center">
                                 <div className="text-white-50">Loading 3D Scene...</div>
                             </div>}>
-                                <HeroExperience />
+                                <HeroExperience showAvatar={!isWidget} />
                             </Suspense>
                         </div>
 
@@ -94,12 +111,15 @@ const Hero = () => {
                         <Suspense fallback={<div className="w-full h-full bg-black-100 rounded-lg flex items-center justify-center">
                             <div className="text-white-50">Loading 3D Scene...</div>
                         </div>}>
-                            <HeroExperience />
+                            <HeroExperience showAvatar={!isWidget} />
                         </Suspense>
                     </div>
                 </figure>
 
             </div>
+
+            {/* Avatar overlay - positioned absolutely within the hero section */}
+            <AvatarWidget isWidget={isWidget} />
         </section>
     )
 }

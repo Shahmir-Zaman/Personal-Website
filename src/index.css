@@ -547,6 +547,37 @@ section {
   pointer-events: none;
 }
 
+/* Avatar Widget Styles */
+.avatar-fixed-widget {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  width: 120px;
+  height: 200px;
+  z-index: 999;
+  cursor: pointer;
+  pointer-events: auto;
+  overflow: visible;
+  animation: avatarGlow 2.5s ease-in-out infinite;
+}
+
+.avatar-fixed-widget:hover {
+  transform: scale(1.15);
+  transition: transform 0.3s ease;
+}
+
+@keyframes avatarGlow {
+
+  0%,
+  100% {
+    filter: drop-shadow(0 0 8px rgba(98, 224, 255, 0.3));
+  }
+
+  50% {
+    filter: drop-shadow(0 0 20px rgba(98, 224, 255, 0.6));
+  }
+}
+
 /* Custom Button Animations */
 .btn-animated {
   position: relative;

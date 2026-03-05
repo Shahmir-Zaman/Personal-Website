@@ -11,6 +11,7 @@ import Experience from './sections/Experience.jsx'
 import Contact from './sections/Contact.jsx'
 import Footer from './sections/Footer.jsx'
 
+
 const App = () => {
     const isMobile = useMediaQuery({ query: '(max-width:768px)' })
 
@@ -35,6 +36,7 @@ const App = () => {
                 <Contact />
                 <Footer />
             </div>
+
         </>
     )
 }

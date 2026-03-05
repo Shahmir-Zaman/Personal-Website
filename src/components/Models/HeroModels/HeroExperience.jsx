@@ -6,8 +6,10 @@ import { Suspense } from "react";
 import { Room } from "./Room";
 import HeroLights from "./HeroLights";
 import Particles from "./Particles";
+import { Avatar } from "./Avatar";
+import { Float } from "@react-three/drei";
 
-const HeroExperience = () => {
+const HeroExperience = ({ showAvatar = true }) => {
   const isMobile = useMediaQuery({ query: "(max-width: 768px)" });
   const isTablet = useMediaQuery({ query: "(max-width: 1024px)" });
 
@@ -18,7 +20,7 @@ const HeroExperience = () => {
       {/* Configure OrbitControls to disable panning and control zoom based on device type */}
       <OrbitControls
         enablePan={false} // Prevents panning of the scene
-        enableZoom={!isTablet} // Disables zoom on tablets
+        enableZoom={false} // Disables zoom on all devices
         maxDistance={75} // Maximum distance for zooming out
         minDistance={5} // Minimum distance for zooming in
         minPolarAngle={Math.PI / 5} // Minimum angle for vertical rotation
@@ -30,11 +32,20 @@ const HeroExperience = () => {
         <Particles count={100} />
         <group
           scale={isMobile ? 0.7 : 1}
-          position={[0, -3.5, 0]}
+          position={[-1, -2.5, 0]}
           rotation={[0, -Math.PI / 4, 0]}
         >
           <Room />
         </group>
+
+        {/* Render the Avatar in the same scene */}
+        {showAvatar && (
+          <group position={[-1.9, -2.1, 2.5]} scale={1.5}>
+            <Float speed={1.5} rotationIntensity={0.02} floatIntensity={0.15}>
+              <Avatar />
+            </Float>
+          </group>
+        )}
       </Suspense>
     </Canvas>
   );
