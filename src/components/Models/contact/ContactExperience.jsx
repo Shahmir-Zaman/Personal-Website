@@ -2,6 +2,7 @@ import { OrbitControls } from "@react-three/drei";
 import { Canvas } from "@react-three/fiber";
 import { Suspense } from "react";
 
+import CanvasLoader from "../../CanvasLoader";
 import Computer from "./Computer";
 
 const ContactExperience = () => {
@@ -35,7 +36,7 @@ const ContactExperience = () => {
         </mesh>
       </group>
 
-      <Suspense fallback={null}>
+      <Suspense fallback={<CanvasLoader />}>
         <group scale={0.03} position={[0, -1.49, -2]} castShadow>
           <Computer />
         </group>

@@ -17,12 +17,9 @@ const Hero = () => {
     useGSAP(() => {
         ScrollTrigger.create({
             trigger: "#hero",
-            // onLeave fires when the 'end' marker passes the scroller-end marker.
-            // When the bottom of the #hero section hits 70% down from the top of the screen:
-            start: "top top",
-            end: "bottom 70%",
-            onLeave: () => setIsWidget(true),
-            onEnterBack: () => setIsWidget(false),
+            start: "bottom 90%",
+            onEnter: () => setIsWidget(true),
+            onLeaveBack: () => setIsWidget(false),
         });
 
         gsap.fromTo('.hero-text h1',
@@ -98,7 +95,7 @@ const Hero = () => {
                             <Suspense fallback={<div className="w-full h-full bg-black-100 rounded-lg flex items-center justify-center">
                                 <div className="text-white-50">Loading 3D Scene...</div>
                             </div>}>
-                                <HeroExperience showAvatar={!isWidget} />
+                                <HeroExperience isWidget={isWidget} />
                             </Suspense>
                         </div>
 
@@ -111,7 +108,7 @@ const Hero = () => {
                         <Suspense fallback={<div className="w-full h-full bg-black-100 rounded-lg flex items-center justify-center">
                             <div className="text-white-50">Loading 3D Scene...</div>
                         </div>}>
-                            <HeroExperience showAvatar={!isWidget} />
+                            <HeroExperience isWidget={isWidget} />
                         </Suspense>
                     </div>
                 </figure>

@@ -1,17 +1,15 @@
 import { navLinks } from '../constants'
-import { useMediaQuery } from 'react-responsive'
 
 import React, { useEffect, useState } from 'react'
 
 const NavBar = () => {
   const [scrolled, setScrolled] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const isMobile = useMediaQuery({ query: '(max-width: 1023px)' }); // lg breakpoint
-  
+
   useEffect(() => {
     const handleScroll = () => {
       const isScrolled = window.scrollY > 10;
-      setScrolled(true);
+      setScrolled(isScrolled);
     }
     window.addEventListener('scroll', handleScroll);
     return () => {
@@ -38,7 +36,7 @@ const NavBar = () => {
           <ul>
             {navLinks.map(({ link, name }) => (
               <li key={name} className='group'>
-                <a 
+                <a
                   href={link}
                   className="block transform transition-transform duration-300 hover:scale-105"
                   onClick={(e) => {
@@ -73,7 +71,7 @@ const NavBar = () => {
             <div className='inner'>
               <span>Contact Me</span>
             </div>
-          </a> 
+          </a>
         </div>
 
         {/* Mobile/Tablet Dropdown */}
@@ -130,7 +128,7 @@ const NavBar = () => {
           )}
         </div>
 
-      </div> 
+      </div>
 
     </header>
   )

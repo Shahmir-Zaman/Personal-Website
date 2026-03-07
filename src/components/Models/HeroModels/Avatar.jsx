@@ -4,32 +4,121 @@ Command: npx gltfjsx@6.5.3 public/models/Avatar.glb --transform
 Files: public/models/Avatar.glb [3.57MB] > Avatar-transformed.glb [377.77KB] (89%)
 */
 
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 import { useGraph } from '@react-three/fiber'
 import { useGLTF, useAnimations } from '@react-three/drei'
 import { SkeletonUtils } from 'three-stdlib'
+import * as THREE from 'three'
 
-export function Avatar(props) {
+export function Avatar({ isWidget, ...props }) {
   const group = React.useRef()
   const { scene, animations } = useGLTF('/models/Avatar-transformed.glb')
   const clone = React.useMemo(() => SkeletonUtils.clone(scene), [scene])
   const { nodes, materials } = useGraph(clone)
-  const { actions } = useAnimations(animations, group)
+  const { actions, mixer } = useAnimations(animations, group)
 
-  // Auto-play the first available animation (idle/standing)
-  React.useEffect(() => {
-    const animationNames = Object.keys(actions)
-    if (animationNames.length > 0) {
-      actions[animationNames[2]]?.reset().fadeIn(0).play()
+  // -- ANIMATION STATE MACHINE -- //
+  const [animationName, setAnimationName] = useState("Idle")
+  const [interactionPulse, setInteractionPulse] = useState(0) // Used to reset the 60s timer
+  console.log("Available Animations:", Object.keys(actions));
+  // 1. Trigger Wave when 'isWidget' mode flips (e.g., scrolled in/out of view)
+  useEffect(() => {
+    setAnimationName("Wave")
+  }, [isWidget])
+
+  // 2. The 60-Second Inactivity Timer
+  useEffect(() => {
+    if (animationName === "Wave") return; // Let the wave finish organically
+
+    let timeout;
+    if (animationName === "Idle") {
+      // If idle for 60 seconds (60000ms), transition to Sad Idle
+      timeout = setTimeout(() => {
+        setAnimationName("Sad Idle");
+      }, 60000);
     }
-  }, [actions])
+
+    return () => clearTimeout(timeout);
+  }, [animationName, interactionPulse])
+  // 'interactionPulse' resets this timer without awkwardly restarting the "Idle" physical mesh animation
+
+  // 3. The Core Animation Crossfader
+  useEffect(() => {
+    if (!actions || Object.keys(actions).length === 0) return;
+
+    // Since your state names exactly match your GLB names, 
+    // we can just directly grab the action based on the current state!
+    const action = actions[animationName];
+    if (!action) return;
+
+    // Crossfade in over 0.5s for buttery smooth transitions
+    action.reset().fadeIn(0.5).play();
+
+    // Specific Configurations
+    if (animationName === "Wave") {
+      action.setEffectiveTimeScale(0.65); // Slow the wave down slightly
+      action.setLoop(THREE.LoopOnce, 1);  // Only wave once
+      action.clampWhenFinished = true;    // Stop on the last frame
+
+      // Listener: When Wave finishes naturally, swap back to Idle
+      const handleFinished = (e) => {
+        if (e.action === action) {
+          setAnimationName("Idle");
+        }
+      };
+      mixer.addEventListener('finished', handleFinished);
+
+      return () => {
+        mixer.removeEventListener('finished', handleFinished);
+        action.fadeOut(0.5);
+      };
+    } else {
+      action.setEffectiveTimeScale(1); // Normal speed
+      action.setLoop(THREE.LoopRepeat, Infinity);
+    }
+
+    // Cleanup: Fade out out-going animations smoothly when transitioning
+    return () => action.fadeOut(0.5);
+  }, [animationName, actions, mixer]);
+
+  // Handle pointer interactions (Hover or Click)
+  const handleInteraction = () => {
+    if (animationName === "Sad Idle") {
+      // Wake up from sadness!
+      setAnimationName("Wave"); // Let's wave back!
+    } else if (animationName === "Idle") {
+      // We are already Idle, just pulse the state to reset the 1-minute timer out of sight
+      setInteractionPulse((prev) => prev + 1);
+    }
+  };
+
   return (
-    <group ref={group} {...props} dispose={null}>
+    <group
+      ref={group}
+      {...props}
+      dispose={null}
+    >
       <group name="Scene">
         <group name="Armature" position={[-0.015, 0, 0]} rotation={[Math.PI / 2, 0, 0]} scale={0.01}>
           <primitive object={nodes.mixamorigHips} />
         </group>
-        <skinnedMesh name="Mesh_0" geometry={nodes.Mesh_0.geometry} material={materials['Material.001']} skeleton={nodes.Mesh_0.skeleton} position={[-0.015, 0, 0]} rotation={[Math.PI / 2, 0, 0]} scale={0.01} />
+        <skinnedMesh
+          name="Mesh_0"
+          geometry={nodes.Mesh_0.geometry}
+          material={materials['Material.001']}
+          skeleton={nodes.Mesh_0.skeleton}
+          position={[-0.015, 0, 0]}
+          rotation={[Math.PI / 2, 0, 0]}
+          scale={0.01}
+          onPointerOver={(e) => {
+            e.stopPropagation(); // prevent rays piercing through multiple models
+            handleInteraction();
+          }}
+          onPointerDown={(e) => {
+            e.stopPropagation();
+            handleInteraction();
+          }}
+        />
       </group>
     </group>
   )
