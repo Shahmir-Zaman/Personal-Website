@@ -5,7 +5,7 @@ Command: npx gltfjsx@6.5.3 optimized-room.glb
 
 import React, { useRef } from "react";
 import { useGLTF, useTexture } from "@react-three/drei";
-import { EffectComposer, SelectiveBloom } from "@react-three/postprocessing";
+import { EffectComposer, Bloom } from "@react-three/postprocessing";
 import { BlendFunction } from "postprocessing";
 import * as THREE from "three";
 
@@ -45,8 +45,7 @@ export function Room(props) {
     return (
         <group {...props} dispose={null}>
             <EffectComposer>
-                <SelectiveBloom
-                    selection={screensRef}
+                <Bloom
                     intensity={1.5} // Strength of the bloom
                     luminanceThreshold={0.2} // Minimum luminance needed
                     luminanceSmoothing={0.9} // Smooth transition

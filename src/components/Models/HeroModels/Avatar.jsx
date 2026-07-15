@@ -10,7 +10,7 @@ import { useGLTF, useAnimations } from '@react-three/drei'
 import { SkeletonUtils } from 'three-stdlib'
 import * as THREE from 'three'
 
-export function Avatar({ isWidget, ...props }) {
+export function Avatar({ isWidget, onClick, ...props }) {
   const group = React.useRef()
   const { scene, animations } = useGLTF('/models/Avatar-transformed.glb')
   const clone = React.useMemo(() => SkeletonUtils.clone(scene), [scene])
@@ -83,6 +83,9 @@ export function Avatar({ isWidget, ...props }) {
 
   // Handle pointer interactions (Hover or Click)
   const handleInteraction = () => {
+    // Fire the parent's onClick callback (e.g., open chat)
+    onClick?.();
+
     if (animationName === "Sad Idle") {
       // Wake up from sadness!
       setAnimationName("Wave"); // Let's wave back!
@@ -98,7 +101,16 @@ export function Avatar({ isWidget, ...props }) {
       {...props}
       dispose={null}
     >
-      <group name="Scene">
+      <group name="Scene"
+        onPointerOver={(e) => {
+          e.stopPropagation();
+          handleInteraction();
+        }}
+        onClick={(e) => {
+          e.stopPropagation();
+          handleInteraction();
+        }}
+      >
         <group name="Armature" position={[-0.015, 0, 0]} rotation={[Math.PI / 2, 0, 0]} scale={0.01}>
           <primitive object={nodes.mixamorigHips} />
         </group>
@@ -110,14 +122,6 @@ export function Avatar({ isWidget, ...props }) {
           position={[-0.015, 0, 0]}
           rotation={[Math.PI / 2, 0, 0]}
           scale={0.01}
-          onPointerOver={(e) => {
-            e.stopPropagation(); // prevent rays piercing through multiple models
-            handleInteraction();
-          }}
-          onPointerDown={(e) => {
-            e.stopPropagation();
-            handleInteraction();
-          }}
         />
       </group>
     </group>

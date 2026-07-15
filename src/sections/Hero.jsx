@@ -6,6 +6,7 @@ import { words } from '../constants/index.js'
 import { useGSAP } from '@gsap/react'
 import gsap from 'gsap'
 import AvatarWidget from '../components/AvatarWidget.jsx'
+import ChatPanel from '../components/ChatPanel.jsx'
 import { useState } from 'react'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 
@@ -13,6 +14,7 @@ gsap.registerPlugin(ScrollTrigger);
 
 const Hero = () => {
     const [isWidget, setIsWidget] = useState(false);
+    const [isChatOpen, setIsChatOpen] = useState(false);
 
     useGSAP(() => {
         ScrollTrigger.create({
@@ -37,8 +39,16 @@ const Hero = () => {
         )
     })
 
+    const handleAvatarClick = () => {
+        setIsChatOpen(true);
+    };
+
+    const handleChatClose = () => {
+        setIsChatOpen(false);
+    };
+
     return (
-        <section id='hero' className='relative overflow-hidden'>
+        <section id='hero' className={`relative overflow-hidden ${isChatOpen ? 'chat-active' : ''}`}>
             {/* Background Image */}
             <div className='absolute top-0 left-0 z-10 '>
                 <img src="/images/bg.png" alt="background" className="w-full h-full object-cover scale-150" />
@@ -56,9 +66,9 @@ const Hero = () => {
                                 Shaping
                                 <span className="slide">
                                     <span className="wrapper">
-                                        {words.map((word) => (
+                                        {words.map((word, index) => (
                                             <span
-                                                key={word.text}
+                                                key={index}
                                                 className="flex items-center md:gap-2 gap-1 pb-2"
                                             >
                                                 <img
@@ -116,9 +126,13 @@ const Hero = () => {
             </div>
 
             {/* Avatar overlay - positioned absolutely within the hero section */}
-            <AvatarWidget isWidget={isWidget} />
+            <AvatarWidget isWidget={isWidget} onAvatarClick={handleAvatarClick} isChatOpen={isChatOpen} />
+
+            {/* Chat Panel */}
+            <ChatPanel isOpen={isChatOpen} onClose={handleChatClose} />
         </section>
     )
 }
 
 export default Hero
+

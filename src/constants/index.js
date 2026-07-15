@@ -156,18 +156,7 @@ const techStackIcons = [
   },
 ];
 
-const expCards = [
-  {
-    title: 'AI-Enhanced Note-Taking App (Notery)',
-    imgPath: '/images/experience/notery.jpg',
-    logoPath: '/images/logos/Notery_Logo_Light.png',
-    responsibilities: [
-      'Developed a server-rendered note app with Next.js (App Router), React, and TypeScript.',
-      'Designed a relational schema with Prisma and Supabase PostgreSQL, exposing typesafe RESTful CRUD APIs.',
-      'Integrated the OpenAI API to auto-generate contextual responses, persisted alongside user notes.',
-      'Built an accessible, responsive UI with Tailwind CSS, shadcn/ui, and Radix components.',
-    ],
-  },
+const webExpCards = [
   {
     title: 'Full-Stack Listing Platform (RoamAura)',
     imgPath: '/images/experience/roamaura.jpg',
@@ -180,6 +169,19 @@ const expCards = [
     ],
   },
   {
+    title: 'E-Commerce Marketplace (Placeholder)',
+    imgPath: '/images/projects/project1.png',
+    logoPath: '/images/logos/company-logo-2.png',
+    responsibilities: [
+      'Built a highly scalable multi-vendor marketplace using Next.js and Tailwind CSS.',
+      'Designed and executed complex Redux state management for cart systems and seamless checkout flows.',
+      'Integrated Stripe webhooks to secure global payment processing and recurring subscriptions.'
+    ],
+  }
+];
+
+const aiExpCards = [
+  {
     title: 'AI Document Summarizer (SumAI)',
     imgPath: '/images/experience/sumai.jpg',
     logoPath: '/images/logos/SumAI.png',
@@ -190,6 +192,27 @@ const expCards = [
       'Hardened the pipeline for scalability and reliability, streamlining end-to-end AI document processing.',
     ],
   },
+  {
+    title: 'AI-Enhanced Note-Taking App (Notery)',
+    imgPath: '/images/experience/notery.jpg',
+    logoPath: '/images/logos/Notery_Logo_Light.png',
+    responsibilities: [
+      'Developed a server-rendered note app with Next.js (App Router), React, and TypeScript.',
+      'Designed a relational schema with Prisma and Supabase PostgreSQL, exposing typesafe RESTful CRUD APIs.',
+      'Integrated the OpenAI API to auto-generate contextual responses, persisted alongside user notes.',
+      'Built an accessible, responsive UI with Tailwind CSS, shadcn/ui, and Radix components.',
+    ],
+  },
+  {
+    title: 'Predictive Quality Assurance (SmartBuild)',
+    imgPath: '/images/projects/project2.png',
+    logoPath: '/images/logos/company-logo-3.png',
+    responsibilities: [
+      'Architected a predictive quality assurance pipeline, migrating from Linear to Polynomial Regression to eliminate residual bias and achieve an R² > 0.99.',
+      'Developed an XGBoost classification model acting as a material "Gatekeeper" to identify and discard defective raw materials before production.',
+      'Translated technical metrics into massive business ROI, generating a net savings of €126,520 per production batch by reducing defect-related losses by over 80%.'
+    ],
+  }
 ];
 
 const socialImgs = [
@@ -213,5 +236,6 @@ export {
   techStackIcons,
   techStackImgs,
   navLinks,
-  expCards,
+  webExpCards,
+  aiExpCards,
 };

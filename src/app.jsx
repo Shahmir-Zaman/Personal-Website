@@ -1,5 +1,6 @@
 import Hero from './sections/Hero.jsx'
 import ShowcaseSection from './sections/ShowcaseSection.jsx'
+import MLCaseStudy from './sections/MLCaseStudy.jsx'
 import { Canvas } from '@react-three/fiber'
 import { View } from '@react-three/drei'
 import Particles from './components/Models/HeroModels/Particles.jsx'
@@ -37,6 +38,7 @@ const App = () => {
                 <TechStack />
                 <Experience />
                 <ShowcaseSection />
+                <MLCaseStudy />
                 <FeatureCards />
                 <LogoSection />
                 <Contact />

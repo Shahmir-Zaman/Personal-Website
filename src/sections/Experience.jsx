@@ -1,114 +1,87 @@
+import { useState, useRef } from "react";
 import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 
-import { expCards } from "../constants";
+import { webExpCards, aiExpCards } from "../constants";
 import TitleHeader from "../components/TitleHeader";
-
 
 gsap.registerPlugin(ScrollTrigger);
 
 const Experience = () => {
+  const [activeCategory, setActiveCategory] = useState("Web Dev");
+  const containerRef = useRef(null);
+
+  const activeCards = activeCategory === "Web Dev" ? webExpCards : aiExpCards;
+
   useGSAP(() => {
-    // Loop through each timeline card and animate them in
-    // as the user scrolls to each card
-    gsap.utils.toArray(".timeline-card").forEach((card) => {
-      // Animate the card coming in from the left
-      // and fade in
-      gsap.from(card, {
-        // Move the card in from the left
-        xPercent: -100,
-        // Make the card invisible at the start
-        opacity: 0,
-        // Set the origin of the animation to the left side of the card
-        transformOrigin: "left left",
-        // Animate over 1 second
-        duration: 1,
-        // Use a power2 ease-in-out curve
-        ease: "power2.inOut",
-        // Trigger the animation when the card is 80% of the way down the screen
-        scrollTrigger: {
-          // The card is the trigger element
-          trigger: card,
-          // Trigger the animation when the card is 80% down the screen
-          start: "top 80%",
-        },
-      });
+    // Clean up explicit elements inside container
+    const triggerElements = gsap.utils.toArray(".expText", containerRef.current);
+    
+    // Beautiful, snappy scrub-in animation for switching tabs
+    gsap.from(triggerElements, {
+      opacity: 0,
+      x: -50,
+      duration: 0.8,
+      stagger: 0.15,
+      ease: "power2.out",
+      clearProps: "all"
     });
 
     // Animate the timeline height as the user scrolls
-    // from the top of the timeline to 70% down the screen
-    // The timeline height should scale down from 1 to 0
-    // as the user scrolls up the screen
-    gsap.to(".timeline", {
-      // Set the origin of the animation to the bottom of the timeline
+    gsap.to(gsap.utils.toArray(".timeline", containerRef.current), {
       transformOrigin: "bottom bottom",
-      // Animate the timeline height over 1 second
-      ease: "power1.inOut",
-      // Trigger the animation when the timeline is at the top of the screen
-      // and end it when the timeline is at 70% down the screen
+      ease: "none",
       scrollTrigger: {
-        trigger: ".timeline",
+        trigger: ".experience-list-container",
         start: "top center",
-        end: "70% center",
-        // Update the animation as the user scrolls
+        end: "bottom center",
         onUpdate: (self) => {
-          // Scale the timeline height as the user scrolls
-          // from 1 to 0 as the user scrolls up the screen
-          gsap.to(".timeline", {
-            scaleY: 1 - self.progress,
-          });
+          gsap.to(".timeline", { scaleY: 1 - self.progress });
         },
       },
     });
 
-    // Loop through each expText element and animate them in
-    // as the user scrolls to each text element
-    gsap.utils.toArray(".expText").forEach((text) => {
-      // Animate the text opacity from 0 to 1
-      // and move it from the left to its final position
-      // over 1 second with a power2 ease-in-out curve
-      gsap.from(text, {
-        // Set the opacity of the text to 0
-        opacity: 0,
-        // Move the text from the left to its final position
-        // (xPercent: 0 means the text is at its final position)
-        xPercent: 0,
-        // Animate over 1 second
-        duration: 1,
-        // Use a power2 ease-in-out curve
-        ease: "power2.inOut",
-        // Trigger the animation when the text is 60% down the screen
-        scrollTrigger: {
-          // The text is the trigger element
-          trigger: text,
-          // Trigger the animation when the text is 60% down the screen
-          start: "top 60%",
-        },
-      });
-    }, "<"); // position parameter - insert at the start of the animation
-  }, []);
+    ScrollTrigger.refresh();
+  }, { scope: containerRef, dependencies: [activeCategory] });
 
   return (
     <section
       className="flex-center md:mt-40 mt-20 section-padding xl:px-0"
     >
-      <div className="w-full h-full md:px-20 px-5" id="experience" >
+      <div className="w-full h-full md:px-20 px-5" id="experience" ref={containerRef}>
         <TitleHeader
           title="Work Experience"
           sub="💼 My Career Overview"
         />
-        <div className="mt-32 relative">
+
+        {/* Aesthetic Tab UI Navigation */}
+        <div className="cyber-tabs-container mt-12 flex items-center justify-center gap-12 border-b border-white/10 pb-4 relative">
+          <button
+            onClick={() => setActiveCategory("Web Dev")}
+            className={`cyber-tab ${activeCategory === "Web Dev" ? "active" : ""}`}
+          >
+            Web Dev
+          </button>
+          <button
+            onClick={() => setActiveCategory("AI & ML")}
+            className={`cyber-tab ${activeCategory === "AI & ML" ? "active" : ""}`}
+          >
+            AI & ML
+          </button>
+        </div>
+
+        <div className="mt-20 relative experience-list-container">
           <div className="relative z-50 xl:space-y-32 space-y-10">
-            {expCards.map((card) => (
-              <div key={card.title} className="exp-card-wrapper">
+            {activeCards.map((card, idx) => (
+              <div key={card.title + idx} className="exp-card-wrapper">
                 <div className="xl:w-1/6">
                 </div>
                 <div className="xl:w-5/6">
                   <div className="flex items-start">
-                    <div className="timeline-wrapper">
-                      <div className="timeline" />
-                      <div className="gradient-line w-1 h-full" />
+                    <div className="timeline-wrapper relative">
+                      <div className="timeline absolute inset-0 z-10 bg-black/40" />
+                      <div className="gradient-line w-1 h-full absolute inset-0 z-0" />
                     </div>
                     <div className="expText flex xl:gap-20 md:gap-10 gap-5 relative z-20">
                       <div className="timeline-logo">
@@ -117,7 +90,7 @@ const Experience = () => {
                       <div>
                         <h1 className="font-semibold text-3xl">{card.title}</h1>
                         <p className="my-5 text-white-50">
-                          🗓️&nbsp;{card.date}
+                          🗓️&nbsp;{card.date || "2023 - Present"}
                         </p>
                         <p className="text-[#839CB5] italic">
                           Responsibilities
