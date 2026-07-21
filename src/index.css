@@ -371,25 +371,25 @@ section {
   .cyber-tabs-container {
     @apply border-b border-white/10;
   }
-  
+
   .cyber-tab {
     @apply relative pb-4 md:text-xl text-lg font-semibold uppercase tracking-widest text-[#839CB5] transition-colors duration-300;
   }
-  
+
   .cyber-tab:hover {
     @apply text-white-50;
   }
-  
+
   .cyber-tab.active {
     @apply text-[#62e0ff] drop-shadow-[0_0_8px_rgba(98,224,255,0.4)];
   }
-  
+
   .cyber-tab::after {
     content: '';
     @apply absolute bottom-0 left-0 w-full h-[2px] bg-gradient-to-r from-transparent via-[#62e0ff] to-transparent scale-x-0 transition-transform duration-500 origin-center opacity-0;
     box-shadow: 0px 4px 12px rgba(98, 224, 255, 0.8);
   }
-  
+
   .cyber-tab.active::after {
     @apply scale-x-100 opacity-100;
   }
@@ -613,10 +613,6 @@ section {
   pointer-events: none;
 }
 
-.avatar-fixed-widget:hover {
-  transform: scale(1.15);
-  transition: transform 0.3s ease;
-}
 
 @keyframes avatarGlow {
 
@@ -632,7 +628,7 @@ section {
 
 .speech-bubble {
   position: absolute;
-  top: -60px;
+  top: -50px;
   right: -15px;
   background: rgba(14, 14, 16, 0.85);
   backdrop-filter: blur(8px);
@@ -862,14 +858,155 @@ section {
 .chat-bubble-content {
   padding: 12px 16px;
   border-radius: 16px;
-  line-height: 1.5;
+  line-height: 1.6;
 }
 
 .chat-bubble-content p {
   margin: 0;
-  font-size: 14px;
-  white-space: pre-wrap;
+  font-size: 13.5px;
   word-break: break-word;
+}
+
+/* Rich content: full markdown rendering */
+.chat-content-rich {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.chat-content-rich p {
+  margin: 0;
+  font-size: 13.5px;
+  line-height: 1.65;
+  word-break: break-word;
+  color: #d9ecff;
+}
+
+.chat-content-rich strong {
+  color: #ffffff;
+  font-weight: 600;
+}
+
+.chat-content-rich em {
+  color: #a0d8ef;
+  font-style: italic;
+}
+
+/* Headings */
+.chat-content-rich h1,
+.chat-content-rich h2,
+.chat-content-rich h3 {
+  margin: 4px 0 2px;
+  color: #ffffff;
+  font-weight: 600;
+}
+
+.chat-content-rich h1 {
+  font-size: 16px;
+}
+
+.chat-content-rich h2 {
+  font-size: 15px;
+}
+
+.chat-content-rich h3 {
+  font-size: 14px;
+  color: #a0d8ef;
+}
+
+/* Lists */
+.chat-content-rich ul,
+.chat-content-rich ol {
+  margin: 2px 0;
+  padding-left: 20px;
+  font-size: 13.5px;
+  line-height: 1.65;
+  color: #d9ecff;
+}
+
+.chat-content-rich li {
+  margin-bottom: 3px;
+}
+
+.chat-content-rich li::marker {
+  color: #62e0ff;
+}
+
+/* Inline code */
+.chat-content-rich code {
+  background: rgba(98, 224, 255, 0.1);
+  border: 1px solid rgba(98, 224, 255, 0.15);
+  border-radius: 4px;
+  padding: 1px 5px;
+  font-family: 'Courier New', monospace;
+  font-size: 12px;
+  color: #62e0ff;
+}
+
+/* Code blocks */
+.chat-content-rich pre {
+  background: rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 8px;
+  padding: 10px 12px;
+  overflow-x: auto;
+  margin: 4px 0;
+}
+
+.chat-content-rich pre code {
+  background: none;
+  border: none;
+  padding: 0;
+  font-size: 12px;
+  color: #d9ecff;
+}
+
+/* Blockquotes */
+.chat-content-rich blockquote {
+  border-left: 3px solid rgba(98, 224, 255, 0.4);
+  margin: 4px 0;
+  padding: 4px 12px;
+  color: #a0d8ef;
+  font-style: italic;
+}
+
+/* Links */
+.chat-content-rich a {
+  color: #62e0ff;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.chat-content-rich a:hover {
+  color: #ffffff;
+}
+
+/* Interactive action buttons container */
+.chat-action-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 6px;
+}
+
+.chat-action-btn {
+  font-size: 12px;
+  padding: 6px 14px;
+  border-radius: 20px;
+  border: 1px solid rgba(98, 224, 255, 0.25);
+  background: rgba(98, 224, 255, 0.06);
+  color: #a0d8ef;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-family: inherit;
+  letter-spacing: 0.01em;
+}
+
+.chat-action-btn:hover {
+  background: rgba(98, 224, 255, 0.15);
+  border-color: rgba(98, 224, 255, 0.5);
+  color: #d9ecff;
+  transform: translateY(-1px);
 }
 
 .chat-bubble-bot .chat-bubble-content {

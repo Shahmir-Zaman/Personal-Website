@@ -105,7 +105,7 @@ const Hero = () => {
                             <Suspense fallback={<div className="w-full h-full bg-black-100 rounded-lg flex items-center justify-center">
                                 <div className="text-white-50">Loading 3D Scene...</div>
                             </div>}>
-                                <HeroExperience isWidget={isWidget} />
+                                <HeroExperience isWidget={isWidget} isChatOpen={isChatOpen} onAvatarClick={handleAvatarClick} />
                             </Suspense>
                         </div>
 
@@ -118,7 +118,7 @@ const Hero = () => {
                         <Suspense fallback={<div className="w-full h-full bg-black-100 rounded-lg flex items-center justify-center">
                             <div className="text-white-50">Loading 3D Scene...</div>
                         </div>}>
-                            <HeroExperience isWidget={isWidget} />
+                            <HeroExperience isWidget={isWidget} isChatOpen={isChatOpen} onAvatarClick={handleAvatarClick} />
                         </Suspense>
                     </div>
                 </figure>

@@ -2,6 +2,7 @@ import { useState, useRef, useEffect } from "react";
 import { createPortal } from "react-dom";
 import { sendMessage, resetChat } from "../lib/geminiService";
 import { X, Send, RotateCcw } from "lucide-react";
+import Markdown from "react-markdown";
 
 const INITIAL_MESSAGE = {
     role: "bot",
@@ -14,6 +15,47 @@ const SUGGESTED_QUESTIONS = [
     "Is he available for hire?",
     "How can I contact him?",
 ];
+
+const renderMessageContent = (text, handleSend, onClose) => {
+    if (!text) return null;
+
+    // 1. Extract buttons from the text
+    const buttonRegex = /\[BUTTON:\s*(.*?)\]/g;
+    const buttons = [];
+    let match;
+    while ((match = buttonRegex.exec(text)) !== null) {
+        buttons.push(match[1]);
+    }
+
+    // 2. Strip button tags from the text
+    const cleanText = text.replace(buttonRegex, '').trim();
+
+    return (
+        <div className="chat-content-rich">
+            <Markdown>{cleanText}</Markdown>
+            {buttons.length > 0 && (
+                <div className="chat-action-buttons">
+                    {buttons.map((btnLabel, idx) => (
+                        <button
+                            key={idx}
+                            onClick={() => {
+                                if (btnLabel.toLowerCase() === "contact me") {
+                                    document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' });
+                                    onClose();
+                                } else {
+                                    handleSend(btnLabel);
+                                }
+                            }}
+                            className="chat-action-btn"
+                        >
+                            {btnLabel}
+                        </button>
+                    ))}
+                </div>
+            )}
+        </div>
+    );
+};
 
 const ChatPanel = ({ isOpen, onClose }) => {
     const [messages, setMessages] = useState([INITIAL_MESSAGE]);
@@ -117,7 +159,7 @@ const ChatPanel = ({ isOpen, onClose }) => {
                                 </div>
                             )}
                             <div className="chat-bubble-content">
-                                <p>{msg.text}</p>
+                                {renderMessageContent(msg.text, handleSend, onClose)}
                             </div>
                         </div>
                     ))}
