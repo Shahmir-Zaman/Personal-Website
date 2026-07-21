@@ -6,13 +6,32 @@ Files: public/models/Avatar.glb [3.57MB] > Avatar-transformed.glb [377.77KB] (89
 
 import React, { useState, useEffect } from 'react'
 import { useGraph } from '@react-three/fiber'
-import { useGLTF, useAnimations } from '@react-three/drei'
+import { useGLTF, useAnimations, useFBX } from '@react-three/drei'
 import { SkeletonUtils } from 'three-stdlib'
 import * as THREE from 'three'
 
-export function Avatar({ isWidget, onClick, ...props }) {
+export function Avatar({ isHero, isWidget, isHeld, isChatOpen, onClick, ...props }) {
   const group = React.useRef()
-  const { scene, animations } = useGLTF('/models/Avatar-transformed.glb')
+  const { scene, animations: glbAnimations } = useGLTF('/models/Avatar-transformed.glb')
+  
+  // Load the external FBX animation
+  const fallingFbx = useFBX('/models/Falling Idle.fbx')
+  
+  // Combine the built-in GLB animations with our new FBX animation
+  const animations = React.useMemo(() => {
+    if (fallingFbx.animations.length > 0) {
+      const fallingAnim = fallingFbx.animations[0].clone()
+      fallingAnim.name = "Falling" // Rename it so we can reference it cleanly
+      
+      // Fix: Force the animation to play "In Place" by removing the Hip translation track!
+      // This stops the character from physically falling out of the screen.
+      fallingAnim.tracks = fallingAnim.tracks.filter(track => !track.name.includes('Hips.position') && !track.name.includes('mixamorigHips.position'))
+      
+      return [...glbAnimations, fallingAnim]
+    }
+    return glbAnimations
+  }, [glbAnimations, fallingFbx])
+
   const clone = React.useMemo(() => SkeletonUtils.clone(scene), [scene])
   const { nodes, materials } = useGraph(clone)
   const { actions, mixer } = useAnimations(animations, group)
@@ -21,10 +40,14 @@ export function Avatar({ isWidget, onClick, ...props }) {
   const [animationName, setAnimationName] = useState("Idle")
   const [interactionPulse, setInteractionPulse] = useState(0) // Used to reset the 60s timer
   console.log("Available Animations:", Object.keys(actions));
-  // 1. Trigger Wave when 'isWidget' mode flips (e.g., scrolled in/out of view)
+  // 1. Trigger Animations based on Widget State or Drag State
   useEffect(() => {
-    setAnimationName("Wave")
-  }, [isWidget])
+    if (isHeld) {
+      setAnimationName("Falling")
+    } else if (isWidget || isChatOpen) {
+      setAnimationName("Wave")
+    }
+  }, [isWidget, isChatOpen, isHeld])
 
   // 2. The 60-Second Inactivity Timer
   useEffect(() => {
@@ -81,18 +104,19 @@ export function Avatar({ isWidget, onClick, ...props }) {
     return () => action.fadeOut(0.5);
   }, [animationName, actions, mixer]);
 
-  // Handle pointer interactions (Hover or Click)
-  const handleInteraction = () => {
-    // Fire the parent's onClick callback (e.g., open chat)
-    onClick?.();
+  const handleHover = () => {
+    setAnimationName((prev) => {
+      if (prev === "Sad Idle") {
+        return "Wave";
+      }
+      return prev;
+    });
+    setInteractionPulse((prev) => prev + 1);
+  };
 
-    if (animationName === "Sad Idle") {
-      // Wake up from sadness!
-      setAnimationName("Wave"); // Let's wave back!
-    } else if (animationName === "Idle") {
-      // We are already Idle, just pulse the state to reset the 1-minute timer out of sight
-      setInteractionPulse((prev) => prev + 1);
-    }
+  const handleClick = () => {
+    onClick?.();
+    handleHover();
   };
 
   return (
@@ -101,14 +125,29 @@ export function Avatar({ isWidget, onClick, ...props }) {
       {...props}
       dispose={null}
     >
+      {/* Localized lighting specifically for the Avatar. 
+          When in the Hero room and shrunk (isWidget), it turns into a glowing purple portal! */}
+      <pointLight 
+        position={[0, 1.5, 1.5]} 
+        intensity={isHero && isWidget ? 15 : 3} 
+        color={isHero && isWidget ? "#a855f7" : "#ffffff"} 
+        distance={isHero && isWidget ? 3 : 4} 
+        decay={2} 
+      />
+      <hemisphereLight skyColor="#ffffff" groundColor="#444444" intensity={isHero && isWidget ? 0 : 0.5} />
+      
       <group name="Scene"
         onPointerOver={(e) => {
           e.stopPropagation();
-          handleInteraction();
+          document.body.style.cursor = 'pointer';
+          handleHover();
+        }}
+        onPointerOut={(e) => {
+          document.body.style.cursor = 'auto';
         }}
         onClick={(e) => {
           e.stopPropagation();
-          handleInteraction();
+          handleClick();
         }}
       >
         <group name="Armature" position={[-0.015, 0, 0]} rotation={[Math.PI / 2, 0, 0]} scale={0.01}>

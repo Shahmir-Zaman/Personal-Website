@@ -169,19 +169,6 @@ const webExpCards = [
     ],
   },
   {
-    title: 'E-Commerce Marketplace (Placeholder)',
-    imgPath: '/images/projects/project1.png',
-    logoPath: '/images/logos/company-logo-2.png',
-    responsibilities: [
-      'Built a highly scalable multi-vendor marketplace using Next.js and Tailwind CSS.',
-      'Designed and executed complex Redux state management for cart systems and seamless checkout flows.',
-      'Integrated Stripe webhooks to secure global payment processing and recurring subscriptions.'
-    ],
-  }
-];
-
-const aiExpCards = [
-  {
     title: 'AI Document Summarizer (SumAI)',
     imgPath: '/images/experience/sumai.jpg',
     logoPath: '/images/logos/SumAI.png',
@@ -202,7 +189,10 @@ const aiExpCards = [
       'Integrated the OpenAI API to auto-generate contextual responses, persisted alongside user notes.',
       'Built an accessible, responsive UI with Tailwind CSS, shadcn/ui, and Radix components.',
     ],
-  },
+  }
+];
+
+const aiExpCards = [
   {
     title: 'Predictive Quality Assurance (SmartBuild)',
     imgPath: '/images/projects/project2.png',
