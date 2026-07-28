@@ -5,28 +5,43 @@ Files: public/models/Avatar.glb [3.57MB] > Avatar-transformed.glb [377.77KB] (89
 */
 
 import React, { useState, useEffect } from 'react'
-import { useGraph } from '@react-three/fiber'
+import { useGraph, useFrame } from '@react-three/fiber'
 import { useGLTF, useAnimations, useFBX } from '@react-three/drei'
 import { SkeletonUtils } from 'three-stdlib'
 import * as THREE from 'three'
 
+// -- HEAD TRACKING CONFIG -- //
+// How far the head can rotate to follow the cursor (radians) and how quickly it
+// eases toward the target. Tune these to taste.
+const MAX_YAW = 0.6     // left/right (~34°)
+const MAX_PITCH = 0.35  // up/down (~20°)
+const LOOK_LAMBDA = 5   // higher = snappier, lower = lazier follow
+// If the head turns the wrong way, flip the matching sign to -1.
+const YAW_DIR = 1       // left/right direction
+const PITCH_DIR = 1     // up/down direction
+
+// Reusable scratch objects so we don't allocate every frame.
+const _euler = new THREE.Euler()
+const _quat = new THREE.Quaternion()
+const _headPos = new THREE.Vector3()
+
 export function Avatar({ isHero, isWidget, isHeld, isChatOpen, onClick, ...props }) {
   const group = React.useRef()
   const { scene, animations: glbAnimations } = useGLTF('/models/Avatar-transformed.glb')
-  
+
   // Load the external FBX animation
   const fallingFbx = useFBX('/models/Falling Idle.fbx')
-  
+
   // Combine the built-in GLB animations with our new FBX animation
   const animations = React.useMemo(() => {
     if (fallingFbx.animations.length > 0) {
       const fallingAnim = fallingFbx.animations[0].clone()
       fallingAnim.name = "Falling" // Rename it so we can reference it cleanly
-      
+
       // Fix: Force the animation to play "In Place" by removing the Hip translation track!
       // This stops the character from physically falling out of the screen.
       fallingAnim.tracks = fallingAnim.tracks.filter(track => !track.name.includes('Hips.position') && !track.name.includes('mixamorigHips.position'))
-      
+
       return [...glbAnimations, fallingAnim]
     }
     return glbAnimations
@@ -36,29 +51,74 @@ export function Avatar({ isHero, isWidget, isHeld, isChatOpen, onClick, ...props
   const { nodes, materials } = useGraph(clone)
   const { actions, mixer } = useAnimations(animations, group)
 
+  // -- HEAD TRACKING (look toward the cursor) -- //
+  const headBone = React.useMemo(() => clone.getObjectByName('mixamorigHead'), [clone])
+  const look = React.useRef({ yaw: 0, pitch: 0 })
+  const globalPointer = React.useRef({ x: typeof window !== 'undefined' ? window.innerWidth / 2 : 0, y: typeof window !== 'undefined' ? window.innerHeight / 2 : 0 })
+
+  useEffect(() => {
+    const handleMove = (e) => {
+      globalPointer.current.x = e.clientX
+      globalPointer.current.y = e.clientY
+    }
+    window.addEventListener('pointermove', handleMove)
+    return () => window.removeEventListener('pointermove', handleMove)
+  }, [])
+
+  // Runs at default priority, which registers AFTER drei's animation mixer, so
+  // this offset is applied on top of whatever animation pose is playing.
+  useFrame((state, delta) => {
+    if (!headBone) return
+
+    let targetYaw = 0
+    let targetPitch = 0
+
+    if (animationName === "Idle") {
+      headBone.getWorldPosition(_headPos)
+      _headPos.project(state.camera)
+
+      // Map canvas NDC to absolute screen pixels
+      const rect = state.gl.domElement.getBoundingClientRect()
+      const headPixelX = rect.left + (_headPos.x * 0.5 + 0.5) * rect.width
+      const headPixelY = rect.top + (-_headPos.y * 0.5 + 0.5) * rect.height
+
+      // Calculate relative cursor position as a fraction of window size
+      const relX = (globalPointer.current.x - headPixelX) / window.innerWidth
+      const relY = (globalPointer.current.y - headPixelY) / window.innerHeight
+
+      targetYaw = THREE.MathUtils.clamp(relX * 2 * MAX_YAW, -MAX_YAW, MAX_YAW) * YAW_DIR
+      targetPitch = THREE.MathUtils.clamp(relY * 2 * MAX_PITCH, -MAX_PITCH, MAX_PITCH) * PITCH_DIR
+    }
+
+    look.current.yaw = THREE.MathUtils.damp(look.current.yaw, targetYaw, LOOK_LAMBDA, delta)
+    look.current.pitch = THREE.MathUtils.damp(look.current.pitch, targetPitch, LOOK_LAMBDA, delta)
+
+    _euler.set(look.current.pitch, look.current.yaw, 0, 'YXZ')
+    _quat.setFromEuler(_euler)
+    headBone.quaternion.multiply(_quat)
+  })
+
   // -- ANIMATION STATE MACHINE -- //
   const [animationName, setAnimationName] = useState("Idle")
   const [interactionPulse, setInteractionPulse] = useState(0) // Used to reset the 60s timer
   console.log("Available Animations:", Object.keys(actions));
   // 1. Trigger Animations based on Widget State or Drag State
   useEffect(() => {
-    if (isHeld) {
-      setAnimationName("Falling")
-    } else if (isWidget || isChatOpen) {
+    if (isWidget || isChatOpen) {
       setAnimationName("Wave")
     }
-  }, [isWidget, isChatOpen, isHeld])
+  }, [isWidget, isChatOpen])
 
-  // 2. The 60-Second Inactivity Timer
+  // 2. The 90-Second Inactivity Timer
   useEffect(() => {
     if (animationName === "Wave") return; // Let the wave finish organically
 
     let timeout;
     if (animationName === "Idle") {
-      // If idle for 60 seconds (60000ms), transition to Sad Idle
+      // If idle for 90 seconds (90000ms), transition to Sad Idle
       timeout = setTimeout(() => {
         setAnimationName("Sad Idle");
-      }, 60000);
+      }, 90000);
     }
 
     return () => clearTimeout(timeout);
@@ -77,31 +137,47 @@ export function Avatar({ isHero, isWidget, isHeld, isChatOpen, onClick, ...props
     // Crossfade in over 0.5s for buttery smooth transitions
     action.reset().fadeIn(0.5).play();
 
+    let sadTimeout;
+
+    const handleWaveFinished = (e) => {
+      if (e.action === action) {
+        setAnimationName("Idle");
+      }
+    };
+
+    const handleSadFinished = (e) => {
+      if (e.action === action) {
+        // Pause on the last frame for 15 seconds before looping
+        sadTimeout = setTimeout(() => {
+          action.reset().play();
+        }, 8000);
+      }
+    };
+
     // Specific Configurations
     if (animationName === "Wave") {
       action.setEffectiveTimeScale(0.65); // Slow the wave down slightly
       action.setLoop(THREE.LoopOnce, 1);  // Only wave once
       action.clampWhenFinished = true;    // Stop on the last frame
-
-      // Listener: When Wave finishes naturally, swap back to Idle
-      const handleFinished = (e) => {
-        if (e.action === action) {
-          setAnimationName("Idle");
-        }
-      };
-      mixer.addEventListener('finished', handleFinished);
-
-      return () => {
-        mixer.removeEventListener('finished', handleFinished);
-        action.fadeOut(0.5);
-      };
+      mixer.addEventListener('finished', handleWaveFinished);
+    } else if (animationName === "Sad Idle") {
+      action.setEffectiveTimeScale(0.75); // Slower sad idle
+      action.setLoop(THREE.LoopOnce, 1);  // Play once and stop
+      action.clampWhenFinished = true;    // Hold the final frame
+      mixer.addEventListener('finished', handleSadFinished);
     } else {
       action.setEffectiveTimeScale(1); // Normal speed
       action.setLoop(THREE.LoopRepeat, Infinity);
+      action.clampWhenFinished = false;
     }
 
     // Cleanup: Fade out out-going animations smoothly when transitioning
-    return () => action.fadeOut(0.5);
+    return () => {
+      mixer.removeEventListener('finished', handleWaveFinished);
+      mixer.removeEventListener('finished', handleSadFinished);
+      clearTimeout(sadTimeout);
+      action.fadeOut(0.5);
+    };
   }, [animationName, actions, mixer]);
 
   const handleHover = () => {
@@ -127,22 +203,22 @@ export function Avatar({ isHero, isWidget, isHeld, isChatOpen, onClick, ...props
     >
       {/* Localized lighting specifically for the Avatar. 
           When in the Hero room and shrunk (isWidget), it turns into a glowing purple portal! */}
-      <pointLight 
-        position={[0, 1.5, 1.5]} 
-        intensity={isHero && isWidget ? 15 : 3} 
-        color={isHero && isWidget ? "#a855f7" : "#ffffff"} 
-        distance={isHero && isWidget ? 3 : 4} 
-        decay={2} 
+      <pointLight
+        position={[0, 1.5, 1.5]}
+        intensity={isHero && isWidget ? 15 : 3}
+        color={isHero && isWidget ? "#a855f7" : "#ffffff"}
+        distance={isHero && isWidget ? 3 : 4}
+        decay={2}
       />
       <hemisphereLight skyColor="#ffffff" groundColor="#444444" intensity={isHero && isWidget ? 0 : 0.5} />
-      
+
       <group name="Scene"
         onPointerOver={(e) => {
           e.stopPropagation();
           document.body.style.cursor = 'pointer';
           handleHover();
         }}
-        onPointerOut={(e) => {
+        onPointerOut={() => {
           document.body.style.cursor = 'auto';
         }}
         onClick={(e) => {

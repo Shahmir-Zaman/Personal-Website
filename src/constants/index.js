@@ -1,9 +1,9 @@
 const navLinks = [
-    {
+  {
     name: 'Tech Stack',
     link: '#techstack',
   },
-    {
+  {
     name: 'Experience',
     link: '#experience',
   },
@@ -205,6 +205,23 @@ const aiExpCards = [
   }
 ];
 
+// PLACEHOLDER — real career content will be provided separately.
+// Shape: { role, company, date, logoPath, highlights: string[] }
+const workExperience = [
+  {
+    role: 'Software & AI Integration Engineer',
+    company: 'Infinix Innovations - Dubai, UAE',
+    date: '2026 - Present',
+    logoPath: '/images/logos/infinix_innovations_logo.jpg',
+    highlights: [
+      'Specialist in engineering real-time applications, generative AI architectures, and process automation. Recognized for bridging complex interactive front-ends with autonomous back-end workflows to scale both user engagement and internal operations.',
+      'Software & Web Engineering: Developed 15+ zero-downtime, multi-display applications (including immersive VR and high-traffic Touch/UI systems) that successfully handled 30,000+ live user interactions at premier industry events.',
+      'AI Integration: Engineered real-time generative computer vision pipelines (NVIDIA SDK, Stream Diffusion, ComfyUI) and autonomous RAG-based voice assistants driven by large language models, custom vector databases, and interactive 3D avatars.',
+      'Process Automation: Architecting internal business automation workflows, including a custom quotation automizer and intelligent client follow-up systems designed to streamline sales pipelines and reduce manual overhead.',
+    ],
+  }
+];
+
 const socialImgs = [
   {
     name: 'github',
@@ -228,4 +245,5 @@ export {
   navLinks,
   webExpCards,
   aiExpCards,
+  workExperience,
 };

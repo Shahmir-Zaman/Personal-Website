@@ -12,14 +12,32 @@ dist
 dist-ssr
 *.local
 .env
+.env.*
 
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json
 .idea
 .DS_Store
+Thumbs.db
 *.suo
 *.ntvs*
 *.njsproj
 *.sln
 *.sw?
+
+# AI coding tool configs (local/session state — not project code)
+.agents/
+.claude/
+.codex/
+.impeccable/
+
+# Coverage & test output
+coverage
+*.lcov
+
+# Vercel
+.vercel
+
+# Misc
+*.tsbuildinfo

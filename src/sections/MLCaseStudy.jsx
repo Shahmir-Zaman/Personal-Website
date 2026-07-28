@@ -1,22 +1,67 @@
-import { useState, useRef } from 'react';
-import { ChevronLeft, ChevronRight, Download } from 'lucide-react';
+import { useState, useRef, useEffect } from 'react';
+import { createPortal } from 'react-dom';
+import { ChevronLeft, ChevronRight, Download, Maximize2, X } from 'lucide-react';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { useGSAP } from '@gsap/react';
 
+import TitleHeader from '../components/TitleHeader';
+
 gsap.registerPlugin(ScrollTrigger);
+
+// Slides live in public/images/projects/smartbuild/
+const slides = Array.from({ length: 12 }, (_, i) => `/images/projects/smartbuild/slide${i + 1}.jpg`);
+
+const intro = <>Acting as <strong className="text-white font-semibold">data science consultants</strong>, my team was brought in to optimize <strong className="text-white font-semibold">SmartBuild's</strong> manufacturing line and pitch the solution directly to their CEO and CTO. The brief was pointed: don't just write code — prove real business value. We split it into two problems.</>;
+
+const metrics = [
+    { value: "€126,520", label: "Net savings per batch", accent: "green" },
+    { value: "0.99+", label: "Model accuracy (R²)", accent: "cyan" },
+    { value: "−83%", label: "Cut in defect costs", accent: "cyan" },
+];
+
+// Inline reference that points a phrase at a specific deck slide: italic,
+// tooltip on hover, and clicking jumps the carousel to that slide.
+const SlideRef = ({ slide, onGo, children }) => (
+    <span className="relative group/ref">
+        <button
+            type="button"
+            onClick={() => onGo(slide)}
+            className="italic font-medium text-cyan-400 underline decoration-dotted decoration-cyan-400/50 underline-offset-2 hover:text-cyan-300 hover:decoration-cyan-300 transition-colors focus:outline-none focus-visible:ring-1 focus-visible:ring-cyan-400 rounded-sm"
+        >
+            {children}
+        </button>
+        <span
+            role="tooltip"
+            className="pointer-events-none absolute bottom-full left-1/2 -translate-x-1/2 mb-1.5 z-30 whitespace-nowrap rounded-md bg-black/95 border border-cyan-400/30 px-2 py-1 text-xs font-normal not-italic text-cyan-200 opacity-0 group-hover/ref:opacity-100 transition-opacity duration-200 shadow-lg"
+        >
+            See slide {slide} ↗
+        </span>
+    </span>
+);
+
+const buildStoryBeats = (goToSlide) => [
+    {
+        step: "Task 01 — Quality Assurance",
+        title: "Predicting Weight Before It's Built",
+        body: <>To guarantee product consistency, we first had to predict a unit's final weight from the machine's input settings. A <strong className="text-white font-semibold">Linear Regression</strong> scored an R² of 0.98 — great on paper, but its <SlideRef slide={4} onGo={goToSlide}>residuals</SlideRef> hid a systematic U-shape bias. The cause: physical volume is multiplicative (length × width × height), so a straight-line model can't capture the machine's physics. Moving to <SlideRef slide={5} onGo={goToSlide}>Polynomial Regression</SlideRef> erased that bias and lifted accuracy past R² 0.99 — letting SmartBuild certify quality mathematically, before a single unit ships.</>,
+    },
+    {
+        step: "Task 02 — The Profit Driver",
+        title: "Stopping Defects at the Source",
+        body: <>This is where the real ROI lived. A faulty finished product costs <SlideRef slide={2} onGo={goToSlide}>€150 in wasted material and machine time</SlideRef>, while catching the bad raw material <em>before</em> production costs just <SlideRef slide={2} onGo={goToSlide}>€10</SlideRef>. We trained an <SlideRef slide={9} onGo={goToSlide}>XGBoost classifier</SlideRef> as a "Gatekeeper" that flags defect-prone inputs at the entry stage, so they never reach the machine — cutting the per-batch defect bill from <SlideRef slide={10} onGo={goToSlide}>€151,650 down to ~€25,000</SlideRef>.</>,
+    },
+];
+
+const takeaway = <>The lesson that stuck: clean, accurate models matter — but solving the <strong className="text-cyan-400 font-semibold">right business problem</strong> is what actually keeps the lights on.</>;
 
 const MLCaseStudy = () => {
     const sectionRef = useRef(null);
     const contentRef = useRef(null);
-    
-    // Placeholder paths - User should put their slides in public/images/projects/smartbuild/
-    const slides = [
-        "/images/projects/smartbuild/slide1.png",
-        "/images/projects/smartbuild/slide2.png",
-        "/images/projects/smartbuild/slide3.png"
-    ];
+    const viewerRef = useRef(null);
     const [currentSlide, setCurrentSlide] = useState(0);
+    const [isLightboxOpen, setIsLightboxOpen] = useState(false);
+    const [pulse, setPulse] = useState(false);
 
     const nextSlide = () => {
         setCurrentSlide((prev) => (prev + 1) % slides.length);
@@ -25,6 +70,53 @@ const MLCaseStudy = () => {
     const prevSlide = () => {
         setCurrentSlide((prev) => (prev - 1 + slides.length) % slides.length);
     };
+
+    // Jump the carousel to a 1-indexed slide, bring it into view, and flash it.
+    const goToSlide = (slideNumber) => {
+        const index = Math.min(Math.max(slideNumber - 1, 0), slides.length - 1);
+        setCurrentSlide(index);
+        viewerRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        setPulse(true);
+        window.setTimeout(() => setPulse(false), 1400);
+    };
+
+    const storyBeats = buildStoryBeats(goToSlide);
+
+    const openLightbox = () => setIsLightboxOpen(true);
+    const closeLightbox = () => setIsLightboxOpen(false);
+
+    const handleViewerKeyDown = (e) => {
+        if (e.key === 'ArrowRight') {
+            e.preventDefault();
+            nextSlide();
+        } else if (e.key === 'ArrowLeft') {
+            e.preventDefault();
+            prevSlide();
+        } else if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            openLightbox();
+        }
+    };
+
+    // While the lightbox is open: lock body scroll and wire up global keys.
+    useEffect(() => {
+        if (!isLightboxOpen) return;
+
+        const handleKeyDown = (e) => {
+            if (e.key === 'Escape') closeLightbox();
+            else if (e.key === 'ArrowRight') nextSlide();
+            else if (e.key === 'ArrowLeft') prevSlide();
+        };
+
+        window.addEventListener('keydown', handleKeyDown);
+        const prevOverflow = document.body.style.overflow;
+        document.body.style.overflow = 'hidden';
+
+        return () => {
+            window.removeEventListener('keydown', handleKeyDown);
+            document.body.style.overflow = prevOverflow;
+        };
+    }, [isLightboxOpen]);
 
     useGSAP(() => {
         gsap.from(contentRef.current, {
@@ -40,113 +132,203 @@ const MLCaseStudy = () => {
     }, []);
 
     return (
-        <section ref={sectionRef} className="w-full pb-20 relative overflow-hidden pointer-events-auto z-10">
-            {/* Background elements to integrate with the cyber theme */}
+        <section ref={sectionRef} id="mlcasestudy" className="w-full md:mt-40 mt-20 section-padding xl:px-0 relative overflow-hidden pointer-events-auto z-10">
+            {/* Background glow to integrate with the cyber theme */}
             <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-cyan-900/10 rounded-full blur-[120px] -z-10 pointer-events-none"></div>
-            
-            <div className="w-full flex justify-center mt-8 mb-12">
-               <div className="w-full max-w-6xl px-5 md:px-20">
-                   <div className="flex flex-col text-center lg:text-left">
-                       <p className="text-cyan-400 font-bold uppercase tracking-widest text-sm mb-2">Featured Data Science Case Study</p>
-                       <h2 className="text-4xl md:text-5xl font-bold text-white tracking-tight">Predictive Quality Assurance</h2>
-                   </div>
-               </div>
-            </div>
 
-            <div className="w-full max-w-6xl mx-auto px-5 md:px-20">
-                {/* Main Dashboard Panel */}
-                <div ref={contentRef} className="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-16 items-center bg-black-200/40 p-6 md:p-10 rounded-2xl border border-white-100/10 backdrop-blur-[2px]">
-                    
-                    {/* Left: Executive Summary */}
-                    <div className="flex flex-col gap-8">
-                        <div>
-                            <h3 className="text-xl md:text-2xl font-bold text-white mb-2">Eliminating Systematic Bias</h3>
-                            <p className="text-white-50 text-base leading-relaxed font-light">
-                                Architected an end-to-end predictive quality assurance pipeline. By migrating from Linear to Polynomial Regression, we completely flattened the U-shape residual bias, pushing our predictive accuracy beyond an <strong className="text-cyan-400 font-semibold">R² of 0.99</strong>.
-                            </p>
-                        </div>
-                        
-                        <div>
-                            <h3 className="text-xl md:text-2xl font-bold text-white mb-2">The XGBoost "Gatekeeper"</h3>
-                            <p className="text-white-50 text-base leading-relaxed font-light">
-                                Beyond just predicting, we stopped defects at the source. Implementing an XGBoost classification model to identify and discard bad raw materials before production drastically reduced costs from €151,650 to ~€25,000.
-                            </p>
-                        </div>
+            <div className="w-full h-full md:px-20 px-5">
+                <TitleHeader
+                    title="Predictive Quality Assurance"
+                    sub="📊 Featured Data Science Case Study"
+                />
 
-                        {/* The Metric Display */}
-                        <div className="case-study-metric p-5 rounded-xl border border-green-500/20 bg-green-950/20 relative overflow-hidden transition-all duration-300 hover:bg-green-950/30">
-                            <div className="absolute top-0 left-0 w-1 h-full bg-green-500 shadow-[0_0_12px_rgba(34,197,94,1)]"></div>
-                            <p className="text-white-50 text-xs sm:text-sm uppercase tracking-wider font-semibold mb-1">Financial Impact / Batch</p>
-                            <div className="flex items-baseline gap-2 flex-wrap sm:flex-nowrap">
-                                <span className="text-3xl sm:text-4xl font-black text-green-400 drop-shadow-[0_0_8px_rgba(34,197,94,0.3)]">€126,520</span>
-                                <span className="text-green-400/80 text-sm sm:text-base uppercase font-bold tracking-wide">Net Savings</span>
+                <div ref={contentRef} className="mt-16 max-w-6xl mx-auto bg-black-200/40 p-6 md:p-10 rounded-2xl border border-white-100/10 backdrop-blur-[2px]">
+
+                    {/* The brief — context before the numbers */}
+                    <p className="text-white-50 text-base md:text-lg leading-relaxed font-light mb-8 max-w-3xl">{intro}</p>
+
+                    {/* Headline metrics — the payoff up front */}
+                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-10">
+                        {metrics.map((metric) => (
+                            <div
+                                key={metric.label}
+                                className={`relative overflow-hidden p-5 rounded-xl border transition-all duration-300 ${
+                                    metric.accent === 'green'
+                                        ? 'border-green-500/20 bg-green-950/20 hover:bg-green-950/30'
+                                        : 'border-cyan-500/15 bg-cyan-950/15 hover:bg-cyan-950/25'
+                                }`}
+                            >
+                                <div className={`absolute top-0 left-0 w-1 h-full ${
+                                    metric.accent === 'green'
+                                        ? 'bg-green-500 shadow-[0_0_12px_rgba(34,197,94,1)]'
+                                        : 'bg-cyan-400 shadow-[0_0_12px_rgba(34,211,238,0.8)]'
+                                }`}></div>
+                                <span className={`block text-3xl md:text-4xl font-black ${
+                                    metric.accent === 'green'
+                                        ? 'text-green-400 drop-shadow-[0_0_8px_rgba(34,197,94,0.3)]'
+                                        : 'text-cyan-300 drop-shadow-[0_0_8px_rgba(34,211,238,0.25)]'
+                                }`}>{metric.value}</span>
+                                <span className="block mt-1 text-white-50 text-xs md:text-sm uppercase tracking-wider font-semibold">{metric.label}</span>
                             </div>
-                        </div>
-
-                        {/* CTA Buttons */}
-                        <div className="flex mt-2">
-                           <a 
-                             href="/files/SmartBuild_Optimization_Case_Study.pdf" 
-                             download
-                             className="flex items-center justify-center gap-2 bg-white/5 hover:bg-white/10 text-white px-6 py-3 rounded-lg font-medium transition-all duration-300 backdrop-blur-md border border-white/10 cyber-button-glow hover:text-cyan-300"
-                           >
-                              <Download size={20} />
-                              <span className="text-sm md:text-base">Download Full Case Study</span>
-                           </a>
-                        </div>
+                        ))}
                     </div>
 
-                    {/* Right: Slide Viewer */}
-                    <div className="flex flex-col gap-4">
-                        <div className="slide-viewer-container relative w-full aspect-[16/10] rounded-xl bg-[#0F1115] overflow-hidden border border-white/5 shadow-2xl group flex items-center justify-center">
-                            {/* Fallback pattern/text in case images aren't found yet */}
-                            <div className="absolute inset-0 flex items-center justify-center text-white-50/20 text-sm font-mono tracking-widest pointer-events-none">
-                                PPT_PLACEHOLDER
-                            </div>
+                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-16 items-center">
 
-                            {/* Slides Loop */}
-                            {slides.map((slide, i) => (
-                                <img 
-                                    key={i}
-                                    src={slide}
-                                    alt={`Case Study Slide ${i + 1}`}
-                                    className={`absolute top-0 left-0 w-full h-full object-contain transition-opacity duration-500 ease-in-out ${i === currentSlide ? 'opacity-100 z-10' : 'opacity-0 z-0'}`}
-                                />
+                        {/* Left: the story, problem → solution */}
+                        <div className="flex flex-col gap-8">
+                            {storyBeats.map((beat) => (
+                                <div key={beat.step}>
+                                    <p className="text-cyan-400/80 font-mono text-xs uppercase tracking-widest mb-2">{beat.step}</p>
+                                    <h3 className="text-xl md:text-2xl font-bold text-white mb-2">{beat.title}</h3>
+                                    <p className="text-white-50 text-base leading-relaxed font-light">{beat.body}</p>
+                                </div>
                             ))}
-                            
-                            {/* Slide Navigator Controls */}
-                            <div className="absolute inset-0 flex items-center justify-between px-3 z-20 opacity-100 md:opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none">
-                                <button 
-                                    onClick={prevSlide}
-                                    className="p-1.5 md:p-2 rounded-full bg-black/60 text-white backdrop-blur-md border border-white/20 hover:bg-cyan-500 hover:text-black transition-all hover:scale-110 pointer-events-auto"
+
+                            <div className="flex mt-2">
+                                <a
+                                    href="/files/SmartBuild_Optimization_Case_Study.pdf"
+                                    download
+                                    className="flex items-center justify-center gap-2 bg-white/5 hover:bg-white/10 text-white px-6 py-3 rounded-lg font-medium transition-all duration-300 backdrop-blur-md border border-white/10 cyber-button-glow hover:text-cyan-300"
                                 >
-                                    <ChevronLeft size={24} />
-                                </button>
-                                <button 
-                                    onClick={nextSlide}
-                                    className="p-1.5 md:p-2 rounded-full bg-black/60 text-white backdrop-blur-md border border-white/20 hover:bg-cyan-500 hover:text-black transition-all hover:scale-110 pointer-events-auto"
-                                >
-                                    <ChevronRight size={24} />
-                                </button>
+                                    <Download size={20} />
+                                    <span className="text-sm md:text-base">Download Full Case Study</span>
+                                </a>
                             </div>
-                            
-                            {/* Pagination Indicators */}
-                            <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-2 z-20 pointer-events-auto">
-                                {slides.map((_, i) => (
-                                    <button 
-                                        key={i} 
-                                        onClick={() => setCurrentSlide(i)}
-                                        className={`w-2 h-2 rounded-full transition-all duration-300 ${i === currentSlide ? 'bg-cyan-400 w-6 md:w-8 shadow-[0_0_8px_rgba(34,211,238,0.8)]' : 'bg-white/40 hover:bg-white/60'}`}
-                                        aria-label={`Go to slide ${i+1}`}
+                        </div>
+
+                        {/* Right: slide viewer */}
+                        <div className="flex flex-col gap-4">
+                            <div
+                                ref={viewerRef}
+                                className={`slide-viewer-container relative w-full aspect-[16/10] rounded-xl bg-[#0F1115] overflow-hidden border shadow-2xl group flex items-center justify-center cursor-zoom-in transition-all duration-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400/60 ${pulse ? 'border-cyan-400 ring-2 ring-cyan-400/70 ring-offset-2 ring-offset-black-200' : 'border-white/5'}`}
+                                tabIndex={0}
+                                role="button"
+                                aria-label="Case study presentation slides — click to enlarge"
+                                onClick={openLightbox}
+                                onKeyDown={handleViewerKeyDown}
+                            >
+                                {/* Intentional fallback layer, covered once slides load */}
+                                <div className="absolute inset-0 flex flex-col items-center justify-center gap-2 pointer-events-none bg-[radial-gradient(rgba(255,255,255,0.04)_1px,transparent_1px)] [background-size:20px_20px]">
+                                    <span className="text-white-50/30 text-xs font-mono tracking-widest uppercase">Presentation preview</span>
+                                </div>
+
+                                {slides.map((slide, i) => (
+                                    <img
+                                        key={slide}
+                                        src={slide}
+                                        alt={`Case study slide ${i + 1} of ${slides.length}`}
+                                        loading="lazy"
+                                        className={`absolute top-0 left-0 w-full h-full object-contain transition-opacity duration-500 ease-in-out ${i === currentSlide ? 'opacity-100 z-10' : 'opacity-0 z-0'}`}
                                     />
                                 ))}
+
+                                {/* Expand affordance */}
+                                <button
+                                    onClick={(e) => { e.stopPropagation(); openLightbox(); }}
+                                    aria-label="Enlarge slide"
+                                    className="absolute top-3 left-3 z-20 p-1.5 rounded-md bg-black/60 text-white backdrop-blur-md border border-white/10 opacity-100 md:opacity-60 group-hover:opacity-100 hover:bg-cyan-500 hover:text-black transition-all"
+                                >
+                                    <Maximize2 size={16} />
+                                </button>
+
+                                {/* Slide counter */}
+                                <div className="absolute top-3 right-3 z-20 px-2.5 py-1 rounded-md bg-black/60 backdrop-blur-md border border-white/10 text-white-50 text-xs font-mono tracking-widest pointer-events-none">
+                                    {currentSlide + 1} / {slides.length}
+                                </div>
+
+                                {/* Prev / next controls — always discoverable, brighter on hover */}
+                                <div className="absolute inset-0 flex items-center justify-between px-3 z-20 opacity-100 md:opacity-60 group-hover:opacity-100 group-focus-within:opacity-100 transition-opacity duration-300 pointer-events-none">
+                                    <button
+                                        onClick={(e) => { e.stopPropagation(); prevSlide(); }}
+                                        aria-label="Previous slide"
+                                        className="p-1.5 md:p-2 rounded-full bg-black/60 text-white backdrop-blur-md border border-white/20 hover:bg-cyan-500 hover:text-black transition-all hover:scale-110 pointer-events-auto"
+                                    >
+                                        <ChevronLeft size={24} />
+                                    </button>
+                                    <button
+                                        onClick={(e) => { e.stopPropagation(); nextSlide(); }}
+                                        aria-label="Next slide"
+                                        className="p-1.5 md:p-2 rounded-full bg-black/60 text-white backdrop-blur-md border border-white/20 hover:bg-cyan-500 hover:text-black transition-all hover:scale-110 pointer-events-auto"
+                                    >
+                                        <ChevronRight size={24} />
+                                    </button>
+                                </div>
+
+                                {/* Pagination dots with a touch-friendly hit area */}
+                                <div className="absolute bottom-2 left-1/2 -translate-x-1/2 flex z-20 pointer-events-auto">
+                                    {slides.map((slide, i) => (
+                                        <button
+                                            key={slide}
+                                            onClick={(e) => { e.stopPropagation(); setCurrentSlide(i); }}
+                                            aria-label={`Go to slide ${i + 1}`}
+                                            aria-current={i === currentSlide}
+                                            className="p-2 group/dot"
+                                        >
+                                            <span className={`block h-2 rounded-full transition-all duration-300 ${i === currentSlide ? 'bg-cyan-400 w-6 md:w-8 shadow-[0_0_8px_rgba(34,211,238,0.8)]' : 'bg-white/40 group-hover/dot:bg-white/60 w-2'}`}></span>
+                                        </button>
+                                    ))}
+                                </div>
                             </div>
+                            <p className="text-center text-white-50/80 text-xs md:text-sm font-light">The full deck, as presented to SmartBuild's CEO &amp; CTO — click any slide to enlarge</p>
                         </div>
-                        <p className="text-center text-white-50/60 text-xs md:text-sm italic font-light font-mono">DIRECT PRESENTATION RENDERED FOR C-SUITE</p>
+
                     </div>
 
+                    {/* Closing takeaway */}
+                    <p className="mt-10 pt-6 border-t border-white/10 text-white-50 text-base md:text-lg leading-relaxed font-light text-center max-w-3xl mx-auto">{takeaway}</p>
                 </div>
             </div>
+
+            {/* Fullscreen lightbox — portalled to body so it clears the section's overflow + 3D canvases */}
+            {isLightboxOpen && createPortal(
+                <div
+                    className="fixed inset-0 z-[999] flex items-center justify-center bg-black/90 backdrop-blur-sm p-4 md:p-10"
+                    role="dialog"
+                    aria-modal="true"
+                    aria-label={`Case study slide ${currentSlide + 1} of ${slides.length}, enlarged`}
+                    onClick={closeLightbox}
+                >
+                    {/* Close */}
+                    <button
+                        onClick={closeLightbox}
+                        aria-label="Close enlarged view"
+                        className="absolute top-4 right-4 md:top-6 md:right-6 z-10 p-2 rounded-full bg-white/10 text-white backdrop-blur-md border border-white/20 hover:bg-cyan-500 hover:text-black transition-all"
+                    >
+                        <X size={24} />
+                    </button>
+
+                    {/* Enlarged slide — stop propagation so clicking the image doesn't close */}
+                    <img
+                        src={slides[currentSlide]}
+                        alt={`Case study slide ${currentSlide + 1} of ${slides.length}`}
+                        onClick={(e) => e.stopPropagation()}
+                        className="max-w-full max-h-full object-contain rounded-lg shadow-2xl select-none"
+                    />
+
+                    {/* Prev / next */}
+                    <button
+                        onClick={(e) => { e.stopPropagation(); prevSlide(); }}
+                        aria-label="Previous slide"
+                        className="absolute left-3 md:left-8 top-1/2 -translate-y-1/2 z-10 p-2 md:p-3 rounded-full bg-white/10 text-white backdrop-blur-md border border-white/20 hover:bg-cyan-500 hover:text-black transition-all hover:scale-110"
+                    >
+                        <ChevronLeft size={28} />
+                    </button>
+                    <button
+                        onClick={(e) => { e.stopPropagation(); nextSlide(); }}
+                        aria-label="Next slide"
+                        className="absolute right-3 md:right-8 top-1/2 -translate-y-1/2 z-10 p-2 md:p-3 rounded-full bg-white/10 text-white backdrop-blur-md border border-white/20 hover:bg-cyan-500 hover:text-black transition-all hover:scale-110"
+                    >
+                        <ChevronRight size={28} />
+                    </button>
+
+                    {/* Counter */}
+                    <div className="absolute bottom-5 left-1/2 -translate-x-1/2 z-10 px-3 py-1.5 rounded-full bg-white/10 backdrop-blur-md border border-white/20 text-white text-sm font-mono tracking-widest">
+                        {currentSlide + 1} / {slides.length}
+                    </div>
+                </div>,
+                document.body
+            )}
         </section>
     );
 };
