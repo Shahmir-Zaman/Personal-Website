@@ -4,7 +4,7 @@ const HeroLights = () => {
     return (
         <group>
             <ambientLight intensity={0.5} />
-            <directionalLight position={[10, 10, 10]} intensity={1} />
+            <directionalLight position={[13, 10, 10]} intensity={1} />
         </group>
     );
 };

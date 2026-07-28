@@ -1,9 +1,9 @@
 const navLinks = [
-    {
+  {
     name: 'Tech Stack',
     link: '#techstack',
   },
-    {
+  {
     name: 'Experience',
     link: '#experience',
   },
@@ -169,19 +169,6 @@ const webExpCards = [
     ],
   },
   {
-    title: 'E-Commerce Marketplace (Placeholder)',
-    imgPath: '/images/projects/project1.png',
-    logoPath: '/images/logos/company-logo-2.png',
-    responsibilities: [
-      'Built a highly scalable multi-vendor marketplace using Next.js and Tailwind CSS.',
-      'Designed and executed complex Redux state management for cart systems and seamless checkout flows.',
-      'Integrated Stripe webhooks to secure global payment processing and recurring subscriptions.'
-    ],
-  }
-];
-
-const aiExpCards = [
-  {
     title: 'AI Document Summarizer (SumAI)',
     imgPath: '/images/experience/sumai.jpg',
     logoPath: '/images/logos/SumAI.png',
@@ -202,7 +189,10 @@ const aiExpCards = [
       'Integrated the OpenAI API to auto-generate contextual responses, persisted alongside user notes.',
       'Built an accessible, responsive UI with Tailwind CSS, shadcn/ui, and Radix components.',
     ],
-  },
+  }
+];
+
+const aiExpCards = [
   {
     title: 'Predictive Quality Assurance (SmartBuild)',
     imgPath: '/images/projects/project2.png',
@@ -211,6 +201,23 @@ const aiExpCards = [
       'Architected a predictive quality assurance pipeline, migrating from Linear to Polynomial Regression to eliminate residual bias and achieve an R² > 0.99.',
       'Developed an XGBoost classification model acting as a material "Gatekeeper" to identify and discard defective raw materials before production.',
       'Translated technical metrics into massive business ROI, generating a net savings of €126,520 per production batch by reducing defect-related losses by over 80%.'
+    ],
+  }
+];
+
+// PLACEHOLDER — real career content will be provided separately.
+// Shape: { role, company, date, logoPath, highlights: string[] }
+const workExperience = [
+  {
+    role: 'Software & AI Integration Engineer',
+    company: 'Infinix Innovations - Dubai, UAE',
+    date: '2026 - Present',
+    logoPath: '/images/logos/infinix_innovations_logo.jpg',
+    highlights: [
+      'Specialist in engineering real-time applications, generative AI architectures, and process automation. Recognized for bridging complex interactive front-ends with autonomous back-end workflows to scale both user engagement and internal operations.',
+      'Software & Web Engineering: Developed 15+ zero-downtime, multi-display applications (including immersive VR and high-traffic Touch/UI systems) that successfully handled 30,000+ live user interactions at premier industry events.',
+      'AI Integration: Engineered real-time generative computer vision pipelines (NVIDIA SDK, Stream Diffusion, ComfyUI) and autonomous RAG-based voice assistants driven by large language models, custom vector databases, and interactive 3D avatars.',
+      'Process Automation: Architecting internal business automation workflows, including a custom quotation automizer and intelligent client follow-up systems designed to streamline sales pipelines and reduce manual overhead.',
     ],
   }
 ];
@@ -238,4 +245,5 @@ export {
   navLinks,
   webExpCards,
   aiExpCards,
+  workExperience,
 };

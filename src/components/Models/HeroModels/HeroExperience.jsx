@@ -14,7 +14,7 @@ import HeroLights from "./HeroLights";
 import Particles from "./Particles";
 import { Avatar } from "./Avatar";
 
-const HeroExperience = ({ isWidget }) => {
+const HeroExperience = ({ isWidget, isChatOpen, onAvatarClick }) => {
   const isMobile = useMediaQuery({ query: "(max-width: 768px)" });
   const avatarGroup = useRef();
 
@@ -57,7 +57,7 @@ const HeroExperience = ({ isWidget }) => {
         {/* The Avatar in the same scene, GSAP controlled ref */}
         <group ref={avatarGroup} position={[-1.9, -2.1, 2.5]} scale={1.5} rotation={[0, Math.PI / 12, 0]}>
           <Float speed={1.5} rotationIntensity={0.02} floatIntensity={0.15}>
-            <Avatar isWidget={isWidget} />
+            <Avatar isHero={true} isWidget={isWidget} isChatOpen={isChatOpen} onClick={onAvatarClick} />
           </Float>
         </group>
       </Suspense>

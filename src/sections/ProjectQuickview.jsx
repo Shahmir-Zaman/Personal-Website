@@ -5,10 +5,11 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 
 import { webExpCards, aiExpCards } from "../constants";
 import TitleHeader from "../components/TitleHeader";
+import TimelineCard from "../components/TimelineCard";
 
 gsap.registerPlugin(ScrollTrigger);
 
-const Experience = () => {
+const ProjectQuickview = () => {
   const [activeCategory, setActiveCategory] = useState("Web Dev");
   const containerRef = useRef(null);
 
@@ -17,7 +18,7 @@ const Experience = () => {
   useGSAP(() => {
     // Clean up explicit elements inside container
     const triggerElements = gsap.utils.toArray(".expText", containerRef.current);
-    
+
     // Beautiful, snappy scrub-in animation for switching tabs
     gsap.from(triggerElements, {
       opacity: 0,
@@ -49,10 +50,10 @@ const Experience = () => {
     <section
       className="flex-center md:mt-40 mt-20 section-padding xl:px-0"
     >
-      <div className="w-full h-full md:px-20 px-5" id="experience" ref={containerRef}>
+      <div className="w-full h-full md:px-20 px-5" id="project-quickview" ref={containerRef}>
         <TitleHeader
-          title="Work Experience"
-          sub="💼 My Career Overview"
+          title="Project Quickview"
+          sub="🚀 Projects at a Glance"
         />
 
         {/* Aesthetic Tab UI Navigation */}
@@ -87,24 +88,11 @@ const Experience = () => {
                       <div className="timeline-logo">
                         <img src={card.logoPath} alt="logo" />
                       </div>
-                      <div>
-                        <h1 className="font-semibold text-3xl">{card.title}</h1>
-                        <p className="my-5 text-white-50">
-                          🗓️&nbsp;{card.date || "2023 - Present"}
-                        </p>
-                        <p className="text-[#839CB5] italic">
-                          Responsibilities
-                        </p>
-                        <ul className="list-disc ms-5 mt-5 flex flex-col gap-5 text-white-50">
-                          {card.responsibilities.map(
-                            (responsibility, index) => (
-                              <li key={index} className="text-lg">
-                                {responsibility}
-                              </li>
-                            )
-                          )}
-                        </ul>
-                      </div>
+                      <TimelineCard
+                        title={card.title}
+                        date={card.date}
+                        items={card.responsibilities}
+                      />
                     </div>
                   </div>
                 </div>
@@ -117,4 +105,4 @@ const Experience = () => {
   );
 };
 
-export default Experience;
+export default ProjectQuickview;
