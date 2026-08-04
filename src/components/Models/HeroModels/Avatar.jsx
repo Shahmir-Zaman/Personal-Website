@@ -6,7 +6,7 @@ Files: public/models/Avatar.glb [3.57MB] > Avatar-transformed.glb [377.77KB] (89
 
 import React, { useState, useEffect } from 'react'
 import { useGraph, useFrame } from '@react-three/fiber'
-import { useGLTF, useAnimations, useFBX } from '@react-three/drei'
+import { useGLTF, useAnimations } from '@react-three/drei'
 import { SkeletonUtils } from 'three-stdlib'
 import * as THREE from 'three'
 
@@ -25,27 +25,9 @@ const _euler = new THREE.Euler()
 const _quat = new THREE.Quaternion()
 const _headPos = new THREE.Vector3()
 
-export function Avatar({ isHero, isWidget, isHeld, isChatOpen, onClick, ...props }) {
+export function Avatar({ isHero, isWidget, isChatOpen, onClick, ...props }) {
   const group = React.useRef()
-  const { scene, animations: glbAnimations } = useGLTF('/models/Avatar-transformed.glb')
-
-  // Load the external FBX animation
-  const fallingFbx = useFBX('/models/Falling Idle.fbx')
-
-  // Combine the built-in GLB animations with our new FBX animation
-  const animations = React.useMemo(() => {
-    if (fallingFbx.animations.length > 0) {
-      const fallingAnim = fallingFbx.animations[0].clone()
-      fallingAnim.name = "Falling" // Rename it so we can reference it cleanly
-
-      // Fix: Force the animation to play "In Place" by removing the Hip translation track!
-      // This stops the character from physically falling out of the screen.
-      fallingAnim.tracks = fallingAnim.tracks.filter(track => !track.name.includes('Hips.position') && !track.name.includes('mixamorigHips.position'))
-
-      return [...glbAnimations, fallingAnim]
-    }
-    return glbAnimations
-  }, [glbAnimations, fallingFbx])
+  const { scene, animations } = useGLTF('/models/Avatar-transformed.glb')
 
   const clone = React.useMemo(() => SkeletonUtils.clone(scene), [scene])
   const { nodes, materials } = useGraph(clone)
@@ -101,7 +83,7 @@ export function Avatar({ isHero, isWidget, isHeld, isChatOpen, onClick, ...props
   // -- ANIMATION STATE MACHINE -- //
   const [animationName, setAnimationName] = useState("Idle")
   const [interactionPulse, setInteractionPulse] = useState(0) // Used to reset the 60s timer
-  console.log("Available Animations:", Object.keys(actions));
+
   // 1. Trigger Animations based on Widget State or Drag State
   useEffect(() => {
     if (isWidget || isChatOpen) {
@@ -129,13 +111,32 @@ export function Avatar({ isHero, isWidget, isHeld, isChatOpen, onClick, ...props
   useEffect(() => {
     if (!actions || Object.keys(actions).length === 0) return;
 
-    // Since your state names exactly match your GLB names, 
+    // Since your state names exactly match your GLB names,
     // we can just directly grab the action based on the current state!
     const action = actions[animationName];
     if (!action) return;
 
-    // Crossfade in over 0.5s for buttery smooth transitions
-    action.reset().fadeIn(0.5).play();
+    // Is another action still carrying weight for us to blend out of?
+    const hasOutgoing = Object.values(actions).some(
+      (other) => other !== action && other.isRunning() && other.getEffectiveWeight() > 0.001
+    );
+
+    if (hasOutgoing) {
+      // Crossfade in over 0.5s for buttery smooth transitions. Safe here
+      // because the outgoing action fades out over the same 0.5s, so the
+      // mixer's total weight stays ~1 and the pose never falls back to bind.
+      action.reset().fadeIn(0.5).play();
+    } else {
+      // Nothing to blend from (first mount). Fading in from weight 0 would
+      // leave the mixer under-weighted, and three.js fills the shortfall with
+      // each binding's ORIGINAL (bind pose) value — which puts the hips ~1.4
+      // world units below their animated height. That read as the avatar
+      // floating up through the room floor over half a second.
+      action.reset().setEffectiveWeight(1).play();
+      // Apply that pose now rather than waiting for the next frame's mixer
+      // tick, so no frame is ever painted in the bind pose.
+      mixer.update(0);
+    }
 
     let sadTimeout;
 

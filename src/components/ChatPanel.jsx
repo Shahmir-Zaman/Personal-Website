@@ -120,11 +120,13 @@ const ChatPanel = ({ isOpen, onClose }) => {
                 {/* Header */}
                 <div className="chat-header">
                     <div className="chat-header-left">
-                        <div className="chat-header-avatar-indicator" />
+                        <div className={`chat-header-avatar-indicator ${isTyping ? "is-typing" : ""}`} />
                         <div>
-                            <h3 className="chat-header-title">Shahmir's Assistant</h3>
-                            <span className="chat-header-status">
-                                {isTyping ? "Typing..." : "Online"}
+                            <h3 className="chat-header-title text-base font-semibold">Shahmir's Assistant</h3>
+                            {/* "Online" is filler — the panel being open says that.
+                                The line now carries something a visitor can act on. */}
+                            <span className="chat-header-status text-xs font-medium">
+                                {isTyping ? "Writing…" : "Ask about his work"}
                             </span>
                         </div>
                     </div>
@@ -153,11 +155,6 @@ const ChatPanel = ({ isOpen, onClose }) => {
                             key={i}
                             className={`chat-bubble ${msg.role === "user" ? "chat-bubble-user" : "chat-bubble-bot"}`}
                         >
-                            {msg.role === "bot" && (
-                                <div className="chat-bubble-avatar">
-                                    <img src="/images/avatar-face.png" alt="Shahmir AI" className="w-full h-full object-cover rounded-full scale-125" />
-                                </div>
-                            )}
                             <div className="chat-bubble-content">
                                 {renderMessageContent(msg.text, handleSend, onClose)}
                             </div>
@@ -165,7 +162,7 @@ const ChatPanel = ({ isOpen, onClose }) => {
                     ))}
 
                     {messages.length === 1 && !isTyping && (
-                        <div className="flex flex-wrap gap-2 mt-4 ml-[40px]">
+                        <div className="flex flex-wrap gap-2 mt-4">
                             {SUGGESTED_QUESTIONS.map((q, idx) => (
                                 <button
                                     key={idx}
@@ -181,9 +178,6 @@ const ChatPanel = ({ isOpen, onClose }) => {
                     {/* Typing indicator */}
                     {isTyping && (
                         <div className="chat-bubble chat-bubble-bot">
-                            <div className="chat-bubble-avatar">
-                                <img src="/images/avatar-face.png" alt="Shahmir AI" className="w-full h-full object-cover rounded-full scale-125" />
-                            </div>
                             <div className="chat-typing-indicator">
                                 <span />
                                 <span />

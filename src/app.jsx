@@ -6,7 +6,6 @@ import { View } from '@react-three/drei'
 import Particles from './components/Models/HeroModels/Particles.jsx'
 import { useMediaQuery } from 'react-responsive'
 import NavBar from './components/NavBar.jsx'
-import LogoSection from './sections/LogoSection.jsx'
 import FeatureCards from './sections/FeatureCards.jsx'
 import TechStack from './sections/TechStack.jsx'
 import WorkExperience from './sections/WorkExperience.jsx'
@@ -42,7 +41,6 @@ const App = () => {
                 <ShowcaseSection />
                 <MLCaseStudy />
                 <FeatureCards />
-                <LogoSection />
                 <Contact />
                 <Footer />
             </div>

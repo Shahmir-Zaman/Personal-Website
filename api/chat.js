@@ -1,5 +1,68 @@
 import { GoogleGenerativeAI } from "@google/generative-ai";
+import { getToken } from "@vercel/connect";
 import { buildKnowledgeBase } from '../src/lib/shahmirProfile.js';
+
+// --- Credentials ------------------------------------------------------------
+// Production uses Vercel Connect: the function's OIDC identity is exchanged for
+// a short-lived, scoped credential, so no long-lived Gemini key is stored as an
+// environment variable. Connect returns a *bearer* token, not an API key, so it
+// rides in an Authorization header rather than the SDK's apiKey slot.
+//
+// GEMINI_API_KEY remains the fallback for local `vercel dev` (no OIDC identity)
+// and for any deployment where Connect is unreachable or the connector is not
+// installed. Both paths are exercised: see resolveCredential and the 401/403
+// retry in the handler.
+const CONNECTOR = 'generativelanguage.googleapis.com/personal-website';
+const CONNECT_SUBJECT = { subject: { type: 'app' } };
+
+async function resolveCredential({ forceRefresh = false } = {}) {
+    try {
+        const token = await getToken(CONNECTOR, CONNECT_SUBJECT, { forceRefresh });
+        if (token) return { mode: 'connect', token };
+        console.warn('Vercel Connect returned no token; falling back to GEMINI_API_KEY');
+    } catch (error) {
+        // Covers NoValidTokenError, ConnectorInstallationRequiredError, and the
+        // plain "not running on Vercel" case during local development.
+        console.warn(`Vercel Connect unavailable (${error?.name || 'error'}); falling back to GEMINI_API_KEY`);
+    }
+
+    const apiKey = process.env.GEMINI_API_KEY;
+    if (apiKey) return { mode: 'apikey', apiKey };
+
+    return null;
+}
+
+// The SDK always sends x-goog-api-key from its apiKey argument and throws if a
+// custom header tries to replace it, so the bearer is added alongside. Google
+// honours the Authorization header when one is present.
+function buildModel(credential) {
+    if (credential.mode === 'connect') {
+        return new GoogleGenerativeAI('').getGenerativeModel(
+            { model: "gemini-3.1-flash-lite", systemInstruction: SYSTEM_PROMPT },
+            { customHeaders: { Authorization: `Bearer ${credential.token}` } },
+        );
+    }
+    return new GoogleGenerativeAI(credential.apiKey).getGenerativeModel({
+        model: "gemini-3.1-flash-lite",
+        systemInstruction: SYSTEM_PROMPT,
+    });
+}
+
+// Last resort once Connect has been given a fair chance: the long-lived key.
+// Rethrows the original Connect failure when no key is configured, so the logs
+// point at the real cause rather than a missing-fallback red herring.
+async function askWithStaticKey(ask, connectError) {
+    const apiKey = process.env.GEMINI_API_KEY;
+    if (!apiKey) throw connectError;
+    console.warn('Falling back to GEMINI_API_KEY for this request');
+    return ask({ mode: 'apikey', apiKey });
+}
+
+function isAuthFailure(error) {
+    const status = error?.status ?? error?.response?.status;
+    if (status === 401 || status === 403) return true;
+    return /\b(401|403|unauthenticated|permission denied|api key not valid)\b/i.test(String(error?.message || ''));
+}
 
 // --- Rate limiting ---------------------------------------------------------
 // Best-effort, in-memory, per-warm-instance limiter. Vercel functions are
@@ -50,7 +113,11 @@ function checkRateLimit(ip) {
 // Only plain text is accepted: no images, files, or other inline data parts
 // smuggled in through the message or the client-supplied history.
 const MAX_MESSAGE_LENGTH = 2000;
-const MAX_HISTORY_TURNS = 40;
+// Every turn of history is resent as input on the next request, so this cap is
+// the main lever on what a single crafted request can cost. 40 turns x 2000
+// chars let one request force ~22k input tokens; 8 keeps the ceiling near 5k
+// while still covering any real conversation with a portfolio assistant.
+const MAX_HISTORY_TURNS = 8;
 
 function isPlainTextMessage(value) {
     return typeof value === 'string' && value.trim().length > 0 && value.length <= MAX_MESSAGE_LENGTH;
@@ -80,15 +147,12 @@ const SYSTEM_PROMPT = `ROLE & IDENTITY
 - You are NOT Shahmir — you are his dedicated assistant, here to help recruiters, hiring managers, and collaborators learn about his background, skills, and work.
 
 TONE & STYLE
-- Friendly-professional: warm, approachable, competent.
-- Third person by default: "Shahmir specializes in..."
-- First person for direct quotes only: "As Shahmir puts it: 'I believe...'"
-- Use markdown formatting to make responses easy to scan. Use **bold** for key terms and project names, *italic* for emphasis, \`backticks\` for tech terms, and bullet points for listing multiple items.
-- Keep responses well-structured: use short paragraphs, and bullet points when listing 3 or more items. Headings are optional for longer responses.
-- FORMATTING RULE: Structure your responses as SHORT paragraphs (1-2 sentences each), separated by a blank line between each paragraph. This is critical for readability. Never write a wall of text.
-- Be conversational and natural. Synthesize information in your own words rather than listing raw facts.
-- INTERACTIVE BUTTONS: When the user asks about Shahmir's projects or skills as a group, do NOT explain them all at once. Give a brief 1-sentence intro, then offer clickable buttons using this exact syntax: [BUTTON: Label]. Whenever you refer to contacting Shahmir or mention the contact section/form, you MUST include a [BUTTON: Contact Me] button at the end of your response.
-- When the user asks about a SPECIFIC project, give 2-3 short paragraphs covering what it is, what Shahmir built, and the impact. Keep it digestible.
+- Friendly-professional. Third person ("Shahmir specializes in..."); first person only inside a direct quote.
+- Short paragraphs of 1-2 sentences, blank line between each. Never a wall of text. Synthesize in your own words.
+- Markdown: **bold** for project names ONLY. Do not bold tech names or key terms — bolding everything turns a reply into a wall of bold and is the fastest way to look machine-written. \`backticks\` for tech names, bullets when listing 3+ items.
+- Asked about projects or skills as a GROUP: one-sentence intro, then buttons using exactly [BUTTON: Label] — do not explain them all.
+- Asked about ONE project: 2-3 short paragraphs on what it is, what he built, and the impact.
+- Any time you mention contacting him or the contact form, end with [BUTTON: Contact Me].
 
 KNOWLEDGE BASE
 ${buildKnowledgeBase()}
@@ -99,35 +163,18 @@ GUARDRAILS
 - No code generation: If asked to write code, politely explain this assistant is for learning about Shahmir, and suggest checking his GitHub.
 - Contact routing: For serious hiring conversations, direct to the contact form or LinkedIn.
 
-FEW-SHOT EXAMPLES
+EXAMPLES
+Only the two behaviours the UI depends on. Everything else follows from the rules above.
+
 User: "What are Shahmir's key projects?"
-Assistant: "Shahmir has worked across full-stack web development and AI-driven applications. Here are his key projects, feel free to pick one to learn more about:
+Assistant: "Shahmir has worked across full-stack web development and AI-driven applications. Pick one to learn more:
 
 [BUTTON: RoamAura] [BUTTON: SumAI] [BUTTON: Notery] [BUTTON: SmartBuild]"
 
-User: "SmartBuild"
-Assistant: "SmartBuild is Shahmir's predictive quality assurance project, where he applied machine learning to real-world manufacturing.
-
-He built a regression pipeline that achieved over 99% accuracy, and an XGBoost classification model that acts as a material Gatekeeper, catching defective raw materials before they enter production.
-
-The business impact was significant, generating over 126,000 euros in net savings per batch by cutting defect-related losses by more than 80%."
-
-User: "What does Shahmir do?"
-Assistant: "Shahmir is a full-stack developer who builds web applications using React, Node.js, and cloud services like AWS and GCP.
-
-He also has a strong focus on integrating AI tools and automation workflows into production systems, which sets him apart from a typical web developer."
-
 User: "Can you write me a React component?"
-Assistant: "I appreciate the interest, but I'm here specifically to help you learn about Shahmir's background and work.
+Assistant: "I'm here specifically to help you learn about Shahmir's background and work.
 
-If you'd like to see his coding style, I'd recommend checking out his GitHub. Or feel free to reach out through the contact form to discuss a collaboration directly.
-
-[BUTTON: Contact Me]"
-
-User: "Is he available for hire?"
-Assistant: "Yes, Shahmir is currently open to full-time roles and internships. He is transitioning to a programming internship in Dubai soon.
-
-For specific availability details, the best next step would be to reach out via the contact section below or connect with him on LinkedIn.
+For his coding style, take a look at his GitHub — or reach out to discuss a collaboration directly.
 
 [BUTTON: Contact Me]"
 `;
@@ -155,28 +202,44 @@ export default async function handler(req, res) {
             return res.status(400).json({ error: 'Invalid conversation history.' });
         }
 
-        // Use the secure environment variable without the VITE_ prefix
-        const apiKey = process.env.GEMINI_API_KEY;
-        if (!apiKey) {
-            console.error("Missing GEMINI_API_KEY environment variable");
+        const credential = await resolveCredential();
+        if (!credential) {
+            console.error("No Gemini credential: Vercel Connect failed and GEMINI_API_KEY is unset");
             return res.status(500).json({ error: 'Server configuration error' });
         }
 
-        const genAI = new GoogleGenerativeAI(apiKey);
-        const model = genAI.getGenerativeModel({
-            model: "gemini-1.5-flash",
-            systemInstruction: SYSTEM_PROMPT,
-        });
-
         // Vercel serverless functions are stateless, so we re-instantiate the chat
         // with the history passed from the client
-        const chat = model.startChat({
-            history: history || [],
-        });
+        const ask = async (cred) => {
+            const chat = buildModel(cred).startChat({ history: history || [] });
+            const result = await chat.sendMessage(message.trim());
+            return (await result.response).text();
+        };
 
-        const result = await chat.sendMessage(message.trim());
-        const response = await result.response;
-        const text = response.text();
+        let text;
+        try {
+            text = await ask(credential);
+        } catch (error) {
+            // A cached Connect token can be revoked or expire between calls, and a
+            // connector can be uninstalled mid-deployment. Rather than failing the
+            // visitor's message, retry once with a freshly minted token and then,
+            // if that still will not authenticate, with the static key.
+            if (credential.mode !== 'connect' || !isAuthFailure(error)) throw error;
+
+            console.warn('Connect credential rejected; retrying with a refreshed token');
+            const refreshed = await resolveCredential({ forceRefresh: true });
+
+            if (refreshed && refreshed.mode === 'connect') {
+                try {
+                    text = await ask(refreshed);
+                } catch (retryError) {
+                    if (!isAuthFailure(retryError)) throw retryError;
+                    text = await askWithStaticKey(ask, retryError);
+                }
+            } else {
+                text = await askWithStaticKey(ask, error);
+            }
+        }
 
         return res.status(200).json({ text });
     } catch (error) {

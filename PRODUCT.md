@@ -41,7 +41,7 @@ Model quality and shipped applications are supporting evidence for this position
 **Confirmed functionality**
 
 - Vite + React 19 + Tailwind v4 single-page application.
-- AI chat assistant backed by Google Gemini (`gemini-1.5-flash`) through `api/chat.js`. Scoped strictly to Shahmir's professional background, with prompt-injection resistance, no code generation, and routing of serious hiring conversations to the contact form or LinkedIn. Its knowledge base is assembled from `src/constants/index.js`, so portfolio content changes propagate into what the assistant knows.
+- AI chat assistant backed by Google Gemini (`gemini-3.1-flash-lite`) through `api/chat.js`. Scoped strictly to Shahmir's professional background, with prompt-injection resistance, no code generation, and routing of serious hiring conversations to the contact form or LinkedIn. Its knowledge base is assembled from `src/constants/index.js`, so portfolio content changes propagate into what the assistant knows.
 - Interactive 3D: a draggable animated avatar and 3D scenes via react-three-fiber, using a dual-canvas architecture (fixed background particles plus a shared `View.Port` that sections portal into).
 - Contact form via EmailJS.
 
@@ -54,7 +54,6 @@ Model quality and shipped applications are supporting evidence for this position
 
 **Explicitly undecided**
 
-- Real work-experience content. The `workExperience` array in `src/constants/index.js` currently holds clearly-marked placeholder roles; no employment history has been confirmed yet.
 - Accessibility standard. No specific target has been established, and the motion- and WebGL-heavy design makes reduced-motion support an open question rather than a settled requirement.
 
 ## Brand Commitments
@@ -85,9 +84,9 @@ Model quality and shipped applications are supporting evidence for this position
 
 **Absences future work must not fabricate:**
 
-- No employment history is confirmed — the work-experience entries are placeholders.
+- Employment history is limited to the confirmed Infinix Innovations role (Dubai, UAE). No other roles exist; do not invent additional history.
 - No testimonials, client quotes, or references exist.
-- The logo marquee (`company-logo-1` … `company-logo-11`) is decorative. It is **not** a verified roster of employers, clients, or partners and must never be presented as one.
+- The decorative logo marquee was **removed** in August 2026 precisely because, unlabelled and positioned beneath the skills grid, it read as a roster of employers or clients. Do not reintroduce anonymous third-party logos.
 - No performance or usage metrics exist for Notery, SumAI, or RoamAura — only SmartBuild has real numbers.
 - No pricing, rates, licensing, or availability terms are established beyond "open to full-time roles and internships."
 

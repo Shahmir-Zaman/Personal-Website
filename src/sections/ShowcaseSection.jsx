@@ -1,4 +1,3 @@
-import { Button } from "../components/ui/button"
 import { useRef } from "react"
 import { gsap } from "gsap"
 import { ScrollTrigger } from "gsap/ScrollTrigger"
@@ -66,9 +65,9 @@ const ShowcaseSection = () => {
                     <div className='showcaselayout'>
 
                         {/* Left - Featured Project */}
-                        <div className='first-project-wrapper' ref={project1Ref}>
+                        <div id='project-notery' className='first-project-wrapper' ref={project1Ref}>
                             <div className='image-wrapper'>
-                                <img src="/images/project1.png" alt="Notery" loading="lazy" />
+                                <img src="/images/project1.webp" alt="Notery" loading="lazy" />
                             </div>
 
                             <div className='text-content'>
@@ -80,16 +79,14 @@ const ShowcaseSection = () => {
 
                                 <div className='button-wrapper'>
                                     <div className="flex gap-4 mt-4">
-                                        <Button variant="animated" className="btn-animated" asChild>
-                                            <a href="https://notery.shahmirzaman.dev" target="_blank" rel="noreferrer">
-                                                View Live
-                                            </a>
-                                        </Button>
-                                        <Button variant="animated" className="btn-animated" asChild>
-                                            <a href="https://github.com/Shahmir-Zaman/Notery" target="_blank" rel="noreferrer">
-                                                View Code
-                                            </a>
-                                        </Button>
+                                        <a href="https://notery.shahmirzaman.dev" target="_blank" rel="noreferrer"
+                                            className="btn-animated inline-flex items-center justify-center rounded-md px-4 py-3 bg-[#282732] text-white hover:bg-white hover:text-black font-medium transition-colors text-sm min-w-[44px] min-h-[44px]">
+                                            View Live
+                                        </a>
+                                        <a href="https://github.com/Shahmir-Zaman/Notery" target="_blank" rel="noreferrer"
+                                            className="btn-animated inline-flex items-center justify-center rounded-md px-4 py-3 bg-[#282732] text-white hover:bg-white hover:text-black font-medium transition-colors text-sm min-w-[44px] min-h-[44px]">
+                                            View Code
+                                        </a>
                                     </div>
                                 </div>
                             </div>
@@ -98,9 +95,9 @@ const ShowcaseSection = () => {
                         {/* Right - Project List */}
                         <div className='project-list-wrapper overflow-hidden'>
                             {/* Project 2 - SumAI */}
-                            <div className='project !rounded-xl overflow-hidden' ref={project2Ref}>
+                            <div id='project-sumai' className='project !rounded-xl overflow-hidden' ref={project2Ref}>
                                 <div className='image-wrapper !rounded-xl overflow-hidden'>
-                                    <img src="/images/project2.png" alt="SumAI" className="!rounded-xl w-full h-full object-cover" loading="lazy" />
+                                    <img src="/images/project2.webp" alt="SumAI" className="!rounded-xl w-full h-full object-cover" loading="lazy" />
                                 </div>
 
                                 <div className='text-content'>
@@ -112,25 +109,23 @@ const ShowcaseSection = () => {
 
                                     <div className='button-wrapper'>
                                         <div className="flex gap-4 mt-4 mr-4">
-                                            <Button variant="animated" className="btn-animated" asChild>
-                                                <a href="https://sumai.shahmirzaman.dev" target="_blank" rel="noreferrer">
-                                                    View Live
-                                                </a>
-                                            </Button>
-                                            <Button variant="animated" className="btn-animated" asChild>
-                                                <a href="https://github.com/Shahmir-Zaman/SumAI" target="_blank" rel="noreferrer">
-                                                    View Code
-                                                </a>
-                                            </Button>
+                                            <a href="https://sumai.shahmirzaman.dev" target="_blank" rel="noreferrer"
+                                                className="btn-animated inline-flex items-center justify-center rounded-md px-4 py-3 bg-[#282732] text-white hover:bg-white hover:text-black font-medium transition-colors text-sm min-w-[44px] min-h-[44px]">
+                                                View Live
+                                            </a>
+                                            <a href="https://github.com/Shahmir-Zaman/SumAI" target="_blank" rel="noreferrer"
+                                                className="btn-animated inline-flex items-center justify-center rounded-md px-4 py-3 bg-[#282732] text-white hover:bg-white hover:text-black font-medium transition-colors text-sm min-w-[44px] min-h-[44px]">
+                                                View Code
+                                            </a>
                                         </div>
                                     </div>
                                 </div>
                             </div>
 
                             {/* Project 3 - RoamAura */}
-                            <div className='project !rounded-xl overflow-hidden' ref={project3Ref}>
+                            <div id='project-roamaura' className='project !rounded-xl overflow-hidden' ref={project3Ref}>
                                 <div className='image-wrapper !rounded-xl overflow-hidden'>
-                                    <img src="/images/project3.png" alt="RoamAura" className="!rounded-xl w-full h-full object-cover" loading="lazy" />
+                                    <img src="/images/project3.webp" alt="RoamAura" className="!rounded-xl w-full h-full object-cover" loading="lazy" />
                                 </div>
 
                                 <div className='text-content'>
@@ -142,16 +137,14 @@ const ShowcaseSection = () => {
 
                                     <div className='button-wrapper'>
                                         <div className="flex gap-4 mt-4 mr-4">
-                                            <Button variant="animated" className="btn-animated" asChild>
-                                                <a href="https://roamaura.shahmirzaman.dev" target="_blank" rel="noreferrer">
-                                                    View Live
-                                                </a>
-                                            </Button>
-                                            <Button variant="animated" className="btn-animated" asChild>
-                                                <a href="https://github.com/Shahmir-Zaman/Roamaura" target="_blank" rel="noreferrer">
-                                                    View Code
-                                                </a>
-                                            </Button>
+                                            <a href="https://roamaura.shahmirzaman.dev" target="_blank" rel="noreferrer"
+                                                className="btn-animated inline-flex items-center justify-center rounded-md px-4 py-3 bg-[#282732] text-white hover:bg-white hover:text-black font-medium transition-colors text-sm min-w-[44px] min-h-[44px]">
+                                                View Live
+                                            </a>
+                                            <a href="https://github.com/Shahmir-Zaman/Roamaura" target="_blank" rel="noreferrer"
+                                                className="btn-animated inline-flex items-center justify-center rounded-md px-4 py-3 bg-[#282732] text-white hover:bg-white hover:text-black font-medium transition-colors text-sm min-w-[44px] min-h-[44px]">
+                                                View Code
+                                            </a>
                                         </div>
                                     </div>
                                 </div>

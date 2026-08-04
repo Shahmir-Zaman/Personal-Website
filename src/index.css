@@ -5,7 +5,7 @@
 @custom-variant dark (&:is(.dark *));
 
 :root {
-  --gradient: radial-gradient(circle, #e5e5e5 0%, #fff 100%);
+  --gradient: radial-gradient(circle, #d9ecff 0%, #fff 100%);
   --radius: 0.625rem;
   --background: oklch(1 0 0);
   --foreground: oklch(0.141 0.005 285.823);
@@ -56,8 +56,35 @@ section {
   width: 100dvw;
 }
 
+/* --- Keyboard focus -----------------------------------------------------
+   One Beacon-Blue ring for every keyboard-focused control. `outline` is used
+   rather than `box-shadow` so it never collides with the layered shadows the
+   glass surfaces already carry, and it inherits each element's own radius.
+   Pointer and touch focus stay silent. */
+:focus-visible {
+  outline: 2px solid #62e0ff;
+  outline-offset: 3px;
+}
+
+:focus:not(:focus-visible) {
+  outline: none;
+}
+
+/* The floating avatar is a fixed 3D canvas, so it needs a wider offset and an
+   explicit radius for the ring to read against arbitrary content behind it. */
+.avatar-fixed-widget:focus-visible {
+  outline: 2px solid #62e0ff;
+  outline-offset: 6px;
+  border-radius: 20px;
+}
+
 @theme {
   --font-sans: "Mona Sans", sans-serif;
+  /* The single accent, per DESIGN.md. Exposed as a token so components stop
+     reaching for Tailwind's cyan-* palette, whose cyan-400 (#22d3ee) is a
+     visibly greener second hue. `soft-cyan` is Beacon Blue at rest. */
+  --color-beacon: #62e0ff;
+  --color-soft-cyan: #a0d8ef;
   --color-white-50: #d9ecff;
   --color-black-50: #1c1c21;
   --color-black-100: #0e0e10;
@@ -214,7 +241,7 @@ section {
       @apply flex;
 
       .inner {
-        @apply px-5 py-2 rounded-lg bg-white text-black group-hover:bg-black-50 transition-all duration-300 relative overflow-hidden group-hover:scale-105;
+        @apply px-5 py-3 rounded-lg bg-white text-black group-hover:bg-black-50 transition-all duration-300 relative overflow-hidden group-hover:scale-105;
 
         span {
           @apply group-hover:text-white transition-colors duration-300 relative z-10;
@@ -299,8 +326,11 @@ section {
     .arrow-wrapper {
       @apply group-hover:bg-white-50 size-10 rounded-full absolute right-10 top-1/2 -translate-y-1/2 flex justify-center items-center overflow-hidden;
 
+      /* No idle loop here on purpose: the hover choreography (circle expands,
+         label slides, arrow rises) is this control's authored moment, and a
+         bouncing arrow competed with it. */
       img {
-        @apply size-5 xl:-translate-y-32 translate-y-0 animate-bounce group-hover:translate-y-0 transition-all duration-500;
+        @apply size-5 xl:-translate-y-32 translate-y-0 group-hover:translate-y-0 transition-all duration-500;
       }
     }
   }
@@ -387,7 +417,7 @@ section {
       @apply flex items-center justify-center gap-5;
 
       .icon {
-        @apply border border-black-50 bg-black-100 flex justify-center items-center rounded-xl size-10 md:size-12 cursor-pointer transition-all duration-500 hover:bg-black-50;
+        @apply border border-black-50 bg-black-100 flex justify-center items-center rounded-xl size-11 md:size-12 cursor-pointer transition-all duration-500 hover:bg-black-50;
       }
 
       img {
@@ -402,7 +432,7 @@ section {
   }
 
   .cyber-tab {
-    @apply relative pb-4 md:text-xl text-lg font-semibold uppercase tracking-widest text-[#839CB5] transition-colors duration-300;
+    @apply relative pt-3 pb-4 md:text-xl text-lg font-semibold uppercase tracking-widest text-[#839CB5] transition-colors duration-300;
   }
 
   .cyber-tab:hover {
@@ -425,7 +455,13 @@ section {
 
   /* Work Experience — single premium card */
   .work-hero-card {
-    @apply relative rounded-2xl p-8 md:p-10 transition-all duration-500;
+    @apply relative rounded-2xl p-8 md:p-10;
+    /* Only border-color and box-shadow change on :hover, so the transition is
+       scoped to those. A blanket `transition-all` also intercepts the opacity
+       and transform that GSAP writes inline every frame during the scroll-in,
+       re-targeting a 500ms tween on each write — which stretched the 1s reveal
+       out to ~1.8s and made it fade in asymptotically. */
+    transition: border-color 500ms ease, box-shadow 500ms ease;
     background: rgba(40, 39, 50, 0.4);
     backdrop-filter: blur(8px);
     -webkit-backdrop-filter: blur(8px);
@@ -444,6 +480,141 @@ section {
   }
 }
 
+/* --- Contact form status --- */
+
+.form-status {
+  margin-top: 16px;
+  padding: 16px;
+  border-radius: 12px;
+  border: 1px solid;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  font-size: 16px;
+  line-height: 1.6;
+  text-align: center;
+}
+
+/* Success is signalled in Beacon Blue, not green. Impact Green is reserved by
+   The Green Means Money Rule for a quantified business outcome, and spending it
+   on a form confirmation would cost the €126,520 figure its scarcity. A
+   completed send is exactly what Beacon Blue already means: something happened
+   here. */
+.form-status-success {
+  background: rgba(98, 224, 255, 0.08);
+  border-color: rgba(98, 224, 255, 0.25);
+  color: #62e0ff;
+}
+
+/* Signal Error — the system's only destructive colour, documented in DESIGN.md
+   as the single sanctioned exception to The One Aurora Rule. */
+.form-status-error {
+  background: rgba(253, 92, 121, 0.08);
+  border-color: rgba(253, 92, 121, 0.25);
+  color: #fd5c79;
+}
+
+.form-status-fallback {
+  margin-top: 6px;
+  color: #839cb5;
+}
+
+.form-status-fallback a {
+  color: #62e0ff;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  transition: color 300ms ease;
+}
+
+.form-status-fallback a:hover {
+  color: #ffffff;
+}
+
+/* --- Project Quickview cards --- */
+
+/* Eyebrow above the project name. Uppercase is only permitted at label size
+   (DESIGN.md, The Label Whisper Rule). */
+.project-kind {
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 1.2;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #839cb5;
+}
+
+/* Stack tags — the badge-pill component from DESIGN.md. */
+.project-tag {
+  padding: 6px 14px;
+  border-radius: 9999px;
+  background: #282732;
+  color: #d9ecff;
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 1.2;
+  letter-spacing: 0.02em;
+}
+
+.project-highlight {
+  color: #a0d8ef;
+}
+
+/* Impact Green is reserved for a real quantified business result. */
+.project-highlight-metric {
+  color: #22c55e;
+}
+
+/* --- Project Quickview -> Featured Projects link --- */
+
+.project-link {
+  cursor: pointer;
+  border-radius: 12px;
+  transition: transform 300ms ease;
+}
+
+.project-link:hover {
+  transform: translateX(4px);
+}
+
+.project-cue {
+  color: #62e0ff;
+  opacity: 0.75;
+  transition: opacity 300ms ease;
+}
+
+.project-link:hover .project-cue,
+.project-link:focus-visible .project-cue {
+  opacity: 1;
+}
+
+.project-cue-arrow {
+  transition: transform 300ms ease;
+}
+
+.project-link:hover .project-cue-arrow {
+  transform: translateY(3px);
+}
+
+/* Flash the destination so it is obvious which card the click landed on.
+   Driven by scrollToProject(), which adds and removes .project-flash. */
+@keyframes projectFlash {
+  0% {
+    box-shadow:
+      0 0 0 2px rgba(98, 224, 255, 0.9),
+      0 0 40px rgba(98, 224, 255, 0.45);
+  }
+
+  100% {
+    box-shadow:
+      0 0 0 2px rgba(98, 224, 255, 0),
+      0 0 40px rgba(98, 224, 255, 0);
+  }
+}
+
+.project-flash {
+  border-radius: 12px;
+  animation: projectFlash 1.4s ease-out;
+}
+
 /* --- ML Case Study Styles --- */
 
 .case-study-metric {
@@ -456,8 +627,8 @@ section {
 }
 
 .cyber-button-glow:hover {
-  box-shadow: 0 0 15px rgba(34, 211, 238, 0.3);
-  border-color: rgba(34, 211, 238, 0.5);
+  box-shadow: 0 0 15px rgba(98, 224, 255, 0.3);
+  border-color: rgba(98, 224, 255, 0.5);
 }
 
 .slide-viewer-container {
@@ -653,7 +824,6 @@ section {
   z-index: 999;
   cursor: pointer;
   overflow: visible;
-  animation: avatarGlow 2.5s ease-in-out infinite;
 
   /* Default initial state */
   transform: scale(1);
@@ -662,6 +832,16 @@ section {
   pointer-events: none;
 }
 
+
+/* Gives the WebGL canvas room to render the full model. See AvatarWidget. */
+.avatar-canvas-bleed {
+  position: absolute;
+  inset: -30px;
+  /* The glow lives here, not on the widget: a CSS filter applies to every
+     descendant, so on the parent it wrapped the speech bubble in a cyan haze
+     too. Scoped to the canvas, only the avatar glows. */
+  animation: avatarGlow 2.5s ease-in-out infinite;
+}
 
 @keyframes avatarGlow {
 
@@ -677,23 +857,41 @@ section {
 
 .speech-bubble {
   position: absolute;
-  top: -50px;
-  right: -15px;
+  /* Anchored to the widget's top edge rather than a fixed offset, so a hint
+     that wraps to two or three lines grows upward instead of down into the
+     avatar's head. `right: 0` keeps it 24px off the viewport edge — at the old
+     -15px a wrapped hint sat flush against the screen. */
+  bottom: calc(100% + 8px);
+  right: 0;
   background: rgba(14, 14, 16, 0.85);
   backdrop-filter: blur(8px);
   border: 1px solid rgba(98, 224, 255, 0.2);
   color: #d9ecff;
   padding: 8px 12px;
-  border-radius: 14px 14px 0 14px;
-  font-size: 13px;
+  border-radius: 12px 12px 0 12px;
+  font-size: 12px;
   font-weight: 500;
   white-space: nowrap;
+  text-align: center;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
   pointer-events: none;
   opacity: 0;
   transform: translateY(10px) scale(0.9);
   /* 1s delay so the avatar can finish its scale/wave animation */
   animation: popInBubble 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) 1s forwards;
+}
+
+/* Contextual hints are full sentences, so they must wrap — the default
+   greeting stays on one line via the base rule's nowrap. Widened to 200px and
+   anchored right so it grows away from the viewport edge, not into it. */
+.speech-bubble-hint {
+  white-space: normal;
+  width: max-content;
+  /* Capped against the viewport as well as a fixed width, so the bubble can
+     never push past the screen edge on a narrow phone. */
+  max-width: min(210px, calc(100vw - 48px));
+  line-height: 1.45;
+  text-wrap: balance;
 }
 
 @keyframes popInBubble {
@@ -750,11 +948,12 @@ section {
 }
 
 /* Gradient bar */
+/* A hairline, not a slab. 3px of saturated cyan across the top was the loudest
+   thing in the panel and read as stock widget chrome. */
 .chat-gradient-bar {
   width: 100%;
-  height: 3px;
-  background: #62e0ff;
-  /* Solid cyan accent instead of gradient */
+  height: 1px;
+  background: rgba(98, 224, 255, 0.35);
   flex-shrink: 0;
 }
 
@@ -774,12 +973,19 @@ section {
   gap: 12px;
 }
 
+/* Static and small. A pulsing "online" dot is the single most recognisable
+   stock-chat-widget signal, and it was claiming attention for a status nobody
+   needs — the assistant is available whenever the panel is open. It now only
+   animates while a reply is being written, where the movement means something. */
 .chat-header-avatar-indicator {
-  width: 10px;
-  height: 10px;
+  width: 6px;
+  height: 6px;
   border-radius: 50%;
+  background: rgba(98, 224, 255, 0.5);
+}
+
+.chat-header-avatar-indicator.is-typing {
   background: #62e0ff;
-  box-shadow: 0 0 8px rgba(98, 224, 255, 0.6);
   animation: pulse-dot 2s ease-in-out infinite;
 }
 
@@ -798,15 +1004,12 @@ section {
 }
 
 .chat-header-title {
-  font-size: 15px;
-  font-weight: 600;
   color: #d9ecff;
   margin: 0;
   line-height: 1.2;
 }
 
 .chat-header-status {
-  font-size: 11px;
   color: #62e0ff;
   opacity: 0.8;
 }
@@ -821,7 +1024,9 @@ section {
   border: 1px solid rgba(255, 255, 255, 0.08);
   color: #839cb5;
   padding: 8px;
-  border-radius: 10px;
+  min-width: 44px;
+  min-height: 44px;
+  border-radius: 8px;
   cursor: pointer;
   transition: all 0.2s ease;
   display: flex;
@@ -870,6 +1075,13 @@ section {
   animation: bubbleIn 0.3s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
+/* The visitor's own words sit inset from the right, so the two voices are told
+   apart by position and surface rather than by a repeated avatar chip. */
+.chat-bubble-user {
+  align-self: flex-end;
+  max-width: 82%;
+}
+
 @keyframes bubbleIn {
   from {
     opacity: 0;
@@ -891,19 +1103,6 @@ section {
   flex-direction: row-reverse;
 }
 
-.chat-bubble-avatar {
-  width: 32px;
-  height: 32px;
-  border-radius: 50%;
-  background: rgba(98, 224, 255, 0.1);
-  border: 1px solid rgba(98, 224, 255, 0.2);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 14px;
-  flex-shrink: 0;
-}
-
 .chat-bubble-content {
   padding: 12px 16px;
   border-radius: 16px;
@@ -912,7 +1111,7 @@ section {
 
 .chat-bubble-content p {
   margin: 0;
-  font-size: 13.5px;
+  font-size: 16px;
   word-break: break-word;
 }
 
@@ -925,8 +1124,8 @@ section {
 
 .chat-content-rich p {
   margin: 0;
-  font-size: 13.5px;
-  line-height: 1.65;
+  font-size: 16px;
+  line-height: 1.55;
   word-break: break-word;
   color: #d9ecff;
 }
@@ -951,15 +1150,15 @@ section {
 }
 
 .chat-content-rich h1 {
-  font-size: 16px;
+  font-size: 18px;
 }
 
 .chat-content-rich h2 {
-  font-size: 15px;
+  font-size: 16px;
 }
 
 .chat-content-rich h3 {
-  font-size: 14px;
+  font-size: 16px;
   color: #a0d8ef;
 }
 
@@ -968,7 +1167,7 @@ section {
 .chat-content-rich ol {
   margin: 2px 0;
   padding-left: 20px;
-  font-size: 13.5px;
+  font-size: 16px;
   line-height: 1.65;
   color: #d9ecff;
 }
@@ -987,7 +1186,7 @@ section {
   border: 1px solid rgba(98, 224, 255, 0.15);
   border-radius: 4px;
   padding: 1px 5px;
-  font-family: 'Courier New', monospace;
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
   font-size: 12px;
   color: #62e0ff;
 }
@@ -1012,7 +1211,8 @@ section {
 
 /* Blockquotes */
 .chat-content-rich blockquote {
-  border-left: 3px solid rgba(98, 224, 255, 0.4);
+  /* A quotation rule, not a side-tab accent — 1px keeps it typographic. */
+  border-left: 1px solid rgba(98, 224, 255, 0.4);
   margin: 4px 0;
   padding: 4px 12px;
   color: #a0d8ef;
@@ -1058,19 +1258,23 @@ section {
   transform: translateY(-1px);
 }
 
+/* No accent border: the Tail Rule's 4px top-left corner already identifies the
+   speaker, so a 3px cyan bar on top of it was redundant decoration. */
+/* The assistant speaks on the panel itself. Wrapping every reply in a filled,
+   bordered card put a card inside a card and made the panel read as a stock
+   chat widget; a transcript reads as authored. Only the visitor's own words get
+   a surface, and that asymmetry is what tells the two voices apart. */
 .chat-bubble-bot .chat-bubble-content {
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  border-left: 3px solid #62e0ff;
+  background: none;
+  border: none;
+  padding: 0;
   color: #d9ecff;
-  border-radius: 4px 16px 16px 16px;
 }
 
 .chat-bubble-user .chat-bubble-content {
-  background: rgba(98, 224, 255, 0.1);
-  border: 1px solid rgba(98, 224, 255, 0.2);
+  background: rgba(98, 224, 255, 0.08);
   color: #d9ecff;
-  border-radius: 16px 4px 16px 16px;
+  border-radius: 12px 4px 12px 12px;
 }
 
 /* Typing indicator */
@@ -1081,7 +1285,6 @@ section {
   padding: 14px 18px;
   background: rgba(255, 255, 255, 0.05);
   border: 1px solid rgba(255, 255, 255, 0.08);
-  border-left: 3px solid #62e0ff;
   border-radius: 4px 16px 16px 16px;
 }
 
@@ -1090,7 +1293,9 @@ section {
   height: 7px;
   border-radius: 50%;
   background: #62e0ff;
-  animation: typingBounce 1.4s ease-in-out infinite;
+  /* Exponential ease-out, and it fades rather than hops — a translateY bounce
+     reads dated and fights the calm of the rest of the system. */
+  animation: typingPulse 1.4s cubic-bezier(0.16, 1, 0.3, 1) infinite;
 }
 
 .chat-typing-indicator span:nth-child(2) {
@@ -1101,18 +1306,18 @@ section {
   animation-delay: 0.3s;
 }
 
-@keyframes typingBounce {
+@keyframes typingPulse {
 
   0%,
   60%,
   100% {
-    transform: translateY(0);
-    opacity: 0.4;
+    opacity: 0.25;
+    transform: scale(0.85);
   }
 
   30% {
-    transform: translateY(-8px);
     opacity: 1;
+    transform: scale(1);
   }
 }
 
@@ -1133,7 +1338,7 @@ section {
   border-radius: 12px !important;
   padding: 12px 16px !important;
   color: #d9ecff !important;
-  font-size: 14px !important;
+  font-size: 16px !important;
   outline: none;
   transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
@@ -1307,3 +1512,4 @@ section {
     @apply bg-background text-foreground;
   }
 }
+

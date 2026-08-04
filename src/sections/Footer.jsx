@@ -5,13 +5,23 @@ const Footer = () => {
         <footer className="footer">
             <div className="footer-container">
                 <div className="flex flex-col justify-center">
-                    <p>Terms & Conditions</p>
+                    {/* Was "Terms & Conditions" — plain text naming a document that
+                        does not exist. It read as a link and went nowhere. A
+                        colophon is true and earns the same grid cell. */}
+                    <p>Built with React, Three.js &amp; GSAP</p>
                 </div>
                 <div className="socials">
-                    {socialImgs.map((socialImg, index) => (
-                        <div key={index} className="flex flex-col items-center gap-2">
+                    {socialImgs.map((socialImg) => (
+                        <div key={socialImg.name} className="flex flex-col items-center gap-2">
                             <div className="icon">
-                                <a href={socialImg.url} target="_blank"><img src={socialImg.imgPath} alt="social icon" /></a>
+                                <a
+                                    href={socialImg.url}
+                                    target="_blank"
+                                    rel="noreferrer"
+                                    aria-label={`Shahmir Zaman on ${socialImg.name}`}
+                                >
+                                    <img src={socialImg.imgPath} alt="" />
+                                </a>
                             </div>
                             <span className="text-sm text-white-50 capitalize">{socialImg.name}</span>
                         </div>
