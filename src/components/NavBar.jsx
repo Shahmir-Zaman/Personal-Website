@@ -67,7 +67,7 @@ const NavBar = () => {
                           key={sub.name}
                           href={sub.link}
                           onClick={(e) => handleScrollTo(e, sub.link)}
-                          className="block px-6 py-2.5 text-sm text-white-50 hover:text-white hover:bg-white/10 transition-all duration-200 whitespace-nowrap"
+                          className="block px-6 py-3 text-sm text-white-50 hover:text-white hover:bg-white/10 transition-all duration-200 whitespace-nowrap"
                         >
                           {sub.name}
                         </a>
@@ -147,7 +147,7 @@ const NavBar = () => {
                             key={sub.name}
                             href={sub.link}
                             onClick={(e) => handleScrollTo(e, sub.link)}
-                            className="block px-4 py-2 text-sm text-white-50/70 hover:text-white hover:bg-black-50 transition-all duration-150"
+                            className="block px-4 py-3 text-sm text-white-50/70 hover:text-white hover:bg-black-50 transition-all duration-150"
                           >
                             {sub.name}
                           </a>

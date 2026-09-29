@@ -31,30 +31,24 @@ const Contact = () => {
     }
 
     try {
-      console.log("Sending email with:", {
-        serviceId: import.meta.env.VITE_APP_EMAILJS_SERVICE_ID,
-        templateId: import.meta.env.VITE_APP_EMAILJS_TEMPLATE_ID,
-        publicKey: import.meta.env.VITE_APP_EMAILJS_PUBLIC_KEY
-      });
-
-      const result = await emailjs.sendForm(
+      await emailjs.sendForm(
         import.meta.env.VITE_APP_EMAILJS_SERVICE_ID,
         import.meta.env.VITE_APP_EMAILJS_TEMPLATE_ID,
         formRef.current,
         import.meta.env.VITE_APP_EMAILJS_PUBLIC_KEY
       );
 
-      console.log("EmailJS Success:", result);
-
       // Reset form and show success message
       setForm({ name: "", email: "", message: "" });
       setStatus({ type: "success", message: "Message sent successfully! I'll get back to you soon." });
 
     } catch (error) {
+      // The provider's own error text is for the console, not the visitor — it
+      // leaks EmailJS internals and tells them nothing they can act on.
       console.error("EmailJS Error:", error);
       setStatus({
         type: "error",
-        message: `Failed to send message: ${error.text || error.message || "Unknown error"}`
+        message: "That didn't send — something went wrong on our end.",
       });
     } finally {
       setLoading(false);
@@ -66,7 +60,7 @@ const Contact = () => {
       <div className="w-full h-full md:px-10 px-5">
         <TitleHeader
           title="Get in Touch – Let’s Connect"
-          sub="💬 Have questions or ideas? Let’s talk! 🚀"
+          sub="Open to roles, internships and freelance work"
         />
         <div className="grid-12-cols mt-16">
           <div className="xl:col-span-5">
@@ -127,13 +121,25 @@ const Contact = () => {
                   </div>
                 </button>
 
-                {/* Status Message */}
+                {/* Status message — glass on the void like every other surface,
+                    never a light-mode chip. A failure always offers a way out,
+                    so a broken form is never a dead end. */}
                 {status.message && (
-                  <div className={`mt-4 p-3 rounded-md text-center ${status.type === "success"
-                      ? "bg-green-100 text-green-800 border border-green-300"
-                      : "bg-red-100 text-red-800 border border-red-300"
-                    }`}>
-                    {status.message}
+                  <div
+                    role="status"
+                    aria-live="polite"
+                    className={`form-status ${status.type === "success" ? "form-status-success" : "form-status-error"}`}
+                  >
+                    <p>{status.message}</p>
+                    {status.type === "error" && (
+                      <p className="form-status-fallback">
+                        You can also reach me on{" "}
+                        <a href="https://www.linkedin.com/in/shahmir-zaman-b90a61217" target="_blank" rel="noreferrer">
+                          LinkedIn
+                        </a>
+                        .
+                      </p>
+                    )}
                   </div>
                 )}
               </form>

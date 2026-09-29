@@ -51,7 +51,7 @@ const Hero = () => {
         <section id='hero' className={`relative overflow-hidden ${isChatOpen ? 'chat-active' : ''}`}>
             {/* Background Image */}
             <div className='absolute top-0 left-0 z-10 '>
-                <img src="/images/bg.png" alt="background" className="w-full h-full object-cover scale-150" />
+                <img src="/images/bg.webp" alt="background" className="w-full h-full object-cover scale-150" loading="eager" />
             </div>
 
             <div className='hero-layout'>
@@ -61,8 +61,8 @@ const Hero = () => {
                     <div className='flex flex-col gap-7'>
 
                         {/* Hero Text with Animation */}
-                        <div className='hero-text'>
-                            <h1>
+                        <h1 className='hero-text'>
+                            <span>
                                 Shaping
                                 <span className="slide">
                                     <span className="wrapper">
@@ -81,16 +81,16 @@ const Hero = () => {
                                         ))}
                                     </span>
                                 </span>
-                            </h1>
-                            <h1>into Real Projects</h1>
-                            <h1>that Deliver Results</h1>
-                        </div>
+                            </span>
+                            <span>into Real Projects</span>
+                            <span>that Deliver Results</span>
+                        </h1>
 
                         {/* Description */}
                         <p className='text-white-50 md:text-xl relative z-10 pointer-events-none mt-3'>
-                            Hi, I am Shahmir Zaman, a developer based in Germany with a passion in AI,
+                            Hi, I am Shahmir Zaman, a developer based in Germany and the UAE with a passion in AI,
                             <br />
-                            Automation, Machine Learning and Software Development.
+                            Process Automation, Machine Learning and Software Development.
                         </p>
 
                         {/* CTA Button */}

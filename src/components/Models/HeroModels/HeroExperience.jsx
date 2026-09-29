@@ -1,7 +1,7 @@
 import { OrbitControls, Float } from "@react-three/drei";
 import { Canvas } from "@react-three/fiber";
 import { useMediaQuery } from "react-responsive";
-import { Suspense, useRef } from "react";
+import { Suspense, useRef, useState } from "react";
 import CanvasLoader from "../../CanvasLoader";
 import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
@@ -17,6 +17,8 @@ import { Avatar } from "./Avatar";
 const HeroExperience = ({ isWidget, isChatOpen, onAvatarClick }) => {
   const isMobile = useMediaQuery({ query: "(max-width: 768px)" });
   const avatarGroup = useRef();
+  const containerRef = useRef();
+  const [inView, setInView] = useState(true);
 
   useGSAP(() => {
     if (avatarGroup.current) {
@@ -29,39 +31,52 @@ const HeroExperience = ({ isWidget, isChatOpen, onAvatarClick }) => {
         ease: "back.inOut(1.7)"
       });
     }
+
+    // Gate 3D rendering when scrolled out of view
+    ScrollTrigger.create({
+      trigger: containerRef.current,
+      start: "top bottom",
+      end: "bottom top",
+      onToggle: (self) => setInView(self.isActive),
+    });
   }, [isWidget]);
 
   return (
-    <Canvas camera={{ position: [0, 0, 13], fov: 50 }}>
-      <ambientLight intensity={0.2} color="#1a1a40" />
-      <OrbitControls
-        enablePan={false}
-        enableZoom={false}
-        maxDistance={75}
-        minDistance={5}
-        minPolarAngle={Math.PI / 5}
-        maxPolarAngle={Math.PI / 2}
-      />
+    <div ref={containerRef} className="w-full h-full">
+      <Canvas 
+        camera={{ position: [0, 0, 13], fov: 50 }}
+        frameloop={inView ? "always" : "demand"}
+      >
+        <ambientLight intensity={0.2} color="#1a1a40" />
+        <OrbitControls
+          enablePan={false}
+          enableZoom={false}
+          maxDistance={75}
+          minDistance={5}
+          minPolarAngle={Math.PI / 5}
+          maxPolarAngle={Math.PI / 2}
+        />
 
-      <Suspense fallback={<CanvasLoader />}>
-        <HeroLights />
-        <Particles count={100} />
-        <group
-          scale={isMobile ? 0.7 : 1}
-          position={[-1, -2.5, 0]}
-          rotation={[0, -Math.PI / 4, 0]}
-        >
-          <Room />
-        </group>
+        <Suspense fallback={<CanvasLoader />}>
+          <HeroLights />
+          <Particles count={100} />
+          <group
+            scale={isMobile ? 0.7 : 1}
+            position={[-1, -2.5, 0]}
+            rotation={[0, -Math.PI / 4, 0]}
+          >
+            <Room />
+          </group>
 
-        {/* The Avatar in the same scene, GSAP controlled ref */}
-        <group ref={avatarGroup} position={[-1.9, -2.1, 2.5]} scale={1.5} rotation={[0, Math.PI / 12, 0]}>
-          <Float speed={1.5} rotationIntensity={0.02} floatIntensity={0.15}>
-            <Avatar isHero={true} isWidget={isWidget} isChatOpen={isChatOpen} onClick={onAvatarClick} />
-          </Float>
-        </group>
-      </Suspense>
-    </Canvas>
+          {/* The Avatar in the same scene, GSAP controlled ref */}
+          <group ref={avatarGroup} position={[-1.9, -2.1, 2.5]} scale={1.5} rotation={[0, Math.PI / 12, 0]}>
+            <Float speed={1.5} rotationIntensity={0.02} floatIntensity={0.15}>
+              <Avatar isHero={true} isWidget={isWidget} isChatOpen={isChatOpen} onClick={onAvatarClick} />
+            </Float>
+          </group>
+        </Suspense>
+      </Canvas>
+    </div>
   );
 };
 

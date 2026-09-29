@@ -1,33 +1,43 @@
-// Shared inner content for the two timeline sections (Project Quickview and
-// Work Experience). Renders the title/date/labelled-bullets block; the outer
-// timeline chrome (one-sided spine vs alternating center spine) lives in each
-// section. Pass `logoPath`/`subtitle` for the in-card header variant (Work
-// Experience); omit them when the logo sits on the timeline itself (Project
-// Quickview).
-const TimelineCard = ({ title, subtitle, date, label = "Responsibilities", items, logoPath }) => (
+// Inner content for the Project Quickview timeline. This is an index entry,
+// not a case study: a visitor should be able to take it in at a glance and
+// decide whether to click through to the full project. The outer timeline
+// chrome (the spine) lives in the section.
+const TimelineCard = ({ title, kind, summary, stack = [], highlight, metric = false, cta }) => (
   <div>
-    <div className="flex items-center gap-4">
-      {logoPath && (
-        <div className="size-12 md:size-14 flex-none rounded-full flex justify-center items-center border border-black-50 bg-black-100 overflow-hidden">
-          <img src={logoPath} alt={subtitle || title} className="size-full object-contain p-1.5" />
-        </div>
-      )}
-      <div>
-        <h3 className="font-semibold text-2xl md:text-3xl text-white">{title}</h3>
-        {subtitle && <p className="text-cyan-400/90 text-sm md:text-base">{subtitle}</p>}
-      </div>
-    </div>
+    <p className="project-kind">{kind}</p>
+    <h3 className="font-bold text-2xl md:text-3xl text-white mt-1">{title}</h3>
 
-    <p className="my-5 text-white-50">🗓️&nbsp;{date || "2023 - Present"}</p>
+    <p className="mt-4 max-w-2xl text-base md:text-lg font-light leading-relaxed text-white-50">
+      {summary}
+    </p>
 
-    <p className="text-[#839CB5] italic">{label}</p>
-    <ul className="list-disc ms-5 mt-5 flex flex-col gap-4 md:gap-5 text-white-50">
-      {items.map((item, index) => (
-        <li key={index} className="text-base md:text-lg">
-          {item}
-        </li>
-      ))}
-    </ul>
+    {stack.length > 0 && (
+      <ul className="mt-5 flex flex-wrap gap-2">
+        {stack.map((tech) => (
+          <li key={tech} className="project-tag">
+            {tech}
+          </li>
+        ))}
+      </ul>
+    )}
+
+    {highlight && (
+      // `metric` marks a real quantified business outcome. Per DESIGN.md's
+      // Green Means Money Rule only those get Impact Green; everything else
+      // stays in the neutral text colour.
+      <p className={`mt-5 text-sm md:text-base font-semibold ${metric ? 'project-highlight-metric' : 'project-highlight'}`}>
+        {highlight}
+      </p>
+    )}
+
+    {/* Rendered only when the card is wrapped in a link, so the affordance
+        never appears on a card that does not go anywhere. */}
+    {cta && (
+      <span className="project-cue mt-6 inline-flex items-center gap-2 text-sm font-semibold">
+        {cta}
+        <span aria-hidden="true" className="project-cue-arrow">↓</span>
+      </span>
+    )}
   </div>
 );
 

@@ -18,7 +18,16 @@ const formatSkills = () => {
 const formatProjects = () => {
     const allProjects = [...webExpCards, ...aiExpCards];
     return allProjects.map(project => {
-        return `Project: ${project.title}\nResponsibilities:\n${project.responsibilities.map(r => `  - ${r}`).join('\n')}`;
+        const lines = [`Project: ${project.title} — ${project.kind}`];
+        if (project.summary) lines.push(`Summary: ${project.summary}`);
+        if (project.stack?.length) lines.push(`Tech: ${project.stack.join(', ')}`);
+        if (project.highlight) lines.push(`Headline: ${project.highlight}`);
+        // Only the two most substantive bullets. The full array stays in
+        // constants for reference, but every extra line here is resent as input
+        // tokens on every single request, and `summary` already carries the
+        // gist that most answers need.
+        lines.push(`Details:\n${project.responsibilities.slice(0, 2).map(r => `  - ${r}`).join('\n')}`);
+        return lines.join('\n');
     }).join('\n\n');
 };
 

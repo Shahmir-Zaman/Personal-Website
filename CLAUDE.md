@@ -27,7 +27,7 @@ This is a single-page portfolio site built with Vite + React 19 + Tailwind v4 (v
 
 **AI chat assistant**: A floating draggable avatar (`AvatarWidget.jsx`) opens a chat UI (`ChatPanel.jsx`) backed by Google Gemini:
 - `src/lib/geminiService.js` — client-side fetch wrapper that POSTs to `/api/chat` and keeps an in-memory conversation history.
-- `api/chat.js` — Vercel serverless function; instantiates `@google/generative-ai`, builds a system prompt, and calls `gemini-1.5-flash`.
+- `api/chat.js` — Vercel serverless function; instantiates `@google/generative-ai`, builds a system prompt, and calls `gemini-3.1-flash-lite`.
 - `src/lib/shahmirProfile.js` — assembles the system prompt's knowledge base (bio, skills, projects, contact, FAQ) by reading from `src/constants/index.js`, so portfolio content changes there automatically propagate into what the assistant knows.
 - The assistant's replies can embed `[BUTTON: Label]` markers; `ChatPanel.jsx` parses these out of the markdown response and renders them as clickable action buttons (e.g. a "Contact Me" button that scrolls to `#contact`).
 
