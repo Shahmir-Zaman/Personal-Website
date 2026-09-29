@@ -166,7 +166,10 @@ const aiExpCards = [
     highlight: '€126,520 net savings per production batch',
     metric: true,
     detailHref: '#mlcasestudy',
-    logoPath: '/images/logos/company-logo-3.webp',
+    logoPath: '/images/logos/SmartBuild.webp',
+    // Dark mark, so it needs a light plate to sit on. Opt-in per project: the
+    // Notery logo is a light mark and would disappear on white.
+    logoOnLight: true,
     responsibilities: [
       'Worked in a three-person team on a predictive quality assurance pipeline, migrating from Linear to Polynomial Regression to eliminate residual bias and achieve an R² > 0.99.',
       'Developed an XGBoost classification model acting as a material "Gatekeeper" to identify and discard defective raw materials before production.',
@@ -175,18 +178,21 @@ const aiExpCards = [
   }
 ];
 
-// Confirmed employment. Shape: { role, company, date, logoPath, highlights: string[] }
+// Confirmed employment. Shape: { role, company, date, logoPath, summary?: string, highlights: string[] }
 const workExperience = [
   {
-    role: 'Software & AI Integration Engineer',
+    role: 'Software & AI Integration Intern',
     company: 'Infinix Innovations - Dubai, UAE',
     date: '2026 - Present',
     logoPath: '/images/logos/infinix_innovations_logo.webp',
+    summary:
+      'Specialist in full-stack AI engineering, real-time interactive systems, and intelligent process automation. Proven track record of bridging complex front-end interfaces with autonomous AI backends to scale user engagement and streamline enterprise operations.',
     highlights: [
-      'Specialist in engineering real-time applications, generative AI architectures, and process automation. Recognized for bridging complex interactive front-ends with autonomous back-end workflows to scale both user engagement and internal operations.',
-      'Software & Web Engineering: Developed 15+ zero-downtime, multi-display applications (including immersive VR and high-traffic Touch/UI systems) that successfully handled 30,000+ live user interactions at premier industry events.',
-      'AI Integration: Engineered real-time generative computer vision pipelines (NVIDIA SDK, Stream Diffusion, ComfyUI) and autonomous RAG-based voice assistants driven by large language models, custom vector databases, and interactive 3D avatars.',
-      'Process Automation: Architecting internal business automation workflows, including a custom quotation automizer and intelligent client follow-up systems designed to streamline sales pipelines and reduce manual overhead.',
+      'Real-Time AI Video Avatars: Engineered a locally hosted, conversational AI chatbot featuring a live-streaming, audio-driven video avatar. Architected the end-to-end pipeline linking local LLMs to a Text-to-Speech (TTS) engine, utilizing deep learning models to dynamically lip-sync the avatar\'s video feed to the generated audio in real-time.',
+      'High-Concurrency Interactive Systems: Developed and deployed 15+ zero-downtime, multi-display applications—spanning immersive VR and high-traffic UI systems (Unity, TouchDesigner). Built robust backend architectures that successfully processed 30,000+ live user interactions at premier industry exhibitions.',
+      'Production Computer Vision Pipelines: Architected real-time generative computer vision workflows utilizing StreamDiffusion, ComfyUI, and TensorRT. Optimized inference latency to process live camera feeds into interactive AI art instantaneously for large-scale event installations.',
+      'Full-Stack RAG & Voice Assistants: Developed autonomous, Retrieval-Augmented Generation (RAG) voice assistants. Connected custom vector databases and large language models with 3D avatars, exposing them via WebSockets/REST APIs to interactive front-ends (React/Next.js).',
+      'Agentic Workflow & Process Automation: Built intelligent internal business automation pipelines using n8n, Python, and webhooks. Designed a custom quotation automizer and automated CRM follow-up sequences, significantly reducing manual sales overhead and accelerating pipeline velocity.',
     ],
   }
 ];

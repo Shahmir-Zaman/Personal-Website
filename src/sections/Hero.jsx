@@ -9,12 +9,15 @@ import AvatarWidget from '../components/AvatarWidget.jsx'
 import ChatPanel from '../components/ChatPanel.jsx'
 import { useState } from 'react'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
+import { useMediaQuery } from 'react-responsive'
 
 gsap.registerPlugin(ScrollTrigger);
 
 const Hero = () => {
     const [isWidget, setIsWidget] = useState(false);
     const [isChatOpen, setIsChatOpen] = useState(false);
+    // Tailwind's xl breakpoint. Only one HeroExperience may mount: a CSS-hidden copy still owns a live WebGL context.
+    const isDesktop = useMediaQuery({ minWidth: 1280 });
 
     useGSAP(() => {
         ScrollTrigger.create({
@@ -101,19 +104,19 @@ const Hero = () => {
                         />
 
                         {/* 3D SCENE - MOBILE/TABLET (below button on smaller screens) */}
-                        <div className="xl:hidden w-full h-[50vh] mt-8">
+                        {!isDesktop && <div className="w-full h-[50vh] mt-8">
                             <Suspense fallback={<div className="w-full h-full bg-black-100 rounded-lg flex items-center justify-center">
                                 <div className="text-white-50">Loading 3D Scene...</div>
                             </div>}>
                                 <HeroExperience isWidget={isWidget} isChatOpen={isChatOpen} onAvatarClick={handleAvatarClick} />
                             </Suspense>
-                        </div>
+                        </div>}
 
                     </div>
                 </header>
 
                 {/* RIGHT: HERO 3D SCENE - DESKTOP ONLY */}
-                <figure className="hidden xl:block">
+                {isDesktop && <figure>
                     <div className='hero-3d-layout mt-2 w-250'>
                         <Suspense fallback={<div className="w-full h-full bg-black-100 rounded-lg flex items-center justify-center">
                             <div className="text-white-50">Loading 3D Scene...</div>
@@ -121,7 +124,7 @@ const Hero = () => {
                             <HeroExperience isWidget={isWidget} isChatOpen={isChatOpen} onAvatarClick={handleAvatarClick} />
                         </Suspense>
                     </div>
-                </figure>
+                </figure>}
 
             </div>
 

@@ -261,49 +261,57 @@ section {
   }
 
   .app-showcase {
-    @apply w-full mt-20 px-5 md:px-20 py-10 md:py-20 flex items-center justify-center;
+    @apply w-full mt-10 md:mt-16 px-5 md:px-16 py-8 md:py-14 flex items-center justify-center;
 
-    .showcaselayout {
-      @apply flex xl:flex-row flex-col gap-10 justify-between;
+    .showcase-grid-layout {
+      @apply w-full flex flex-col gap-8 md:gap-12;
     }
 
     .first-project-wrapper {
-      @apply h-full flex flex-col justify-between xl:w-[60%];
+      @apply w-full flex flex-col justify-between;
 
       .image-wrapper {
-        @apply xl:h-[70vh] md:h-[50vh] h-96 relative;
+        @apply w-full aspect-video relative rounded-2xl overflow-hidden border border-white/10 bg-black-200/50;
 
         img {
-          @apply w-full h-full object-cover rounded-xl absolute inset-0;
+          @apply w-full h-full object-cover rounded-2xl;
         }
       }
 
       .text-content {
-        @apply space-y-5 mt-5;
+        @apply space-y-3 mt-4;
 
         .badges {
-          @apply flex gap-2 mb-4;
+          @apply flex gap-2 mb-3;
         }
 
         h2 {
-          @apply text-2xl md:text-3xl lg:text-4xl font-bold;
+          @apply text-2xl md:text-3xl lg:text-4xl font-bold text-white;
         }
       }
     }
 
-    .project-list-wrapper {
-      @apply flex md:flex-row flex-col xl:flex-col gap-10 xl:w-[40%];
+    .bottom-projects-grid {
+      @apply grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8 w-full;
 
-      .image-wrapper {
-        @apply xl:h-[37vh] md:h-52 lg:h-72 h-64 relative rounded-xl xl:px-5 2xl:px-12 py-0;
-      }
+      .project-card {
+        @apply flex flex-col justify-between h-full;
 
-      img {
-        @apply w-full h-full object-contain rounded-xl;
-      }
+        .image-wrapper {
+          @apply w-full aspect-video relative rounded-xl overflow-hidden border border-white/10 bg-black-200/50;
 
-      h2 {
-        @apply text-lg md:text-xl lg:text-2xl font-semibold mt-5;
+          img {
+            @apply w-full h-full object-cover rounded-xl;
+          }
+        }
+
+        .text-content {
+          @apply space-y-2.5 mt-4 flex-1 flex flex-col justify-between;
+
+          h2 {
+            @apply text-xl md:text-2xl font-bold text-white;
+          }
+        }
       }
     }
   }
@@ -353,6 +361,21 @@ section {
 
   .timeline-logo {
     @apply md:size-20 size-10 flex-none rounded-full flex justify-center items-center md:-translate-y-7 border border-black-50 bg-black-100;
+  }
+
+  /* A white plate for dark logo marks.
+     TUNE HERE: `padding` controls breathing room inside the circle and the
+     `scale` on the image controls how large the mark reads. Less padding +
+     higher scale = more zoomed in. */
+  .timeline-logo-light {
+    @apply bg-white p-1 md:p-1.5;
+    border-color: rgba(255, 255, 255, 0.25);
+    overflow: hidden;
+  }
+
+  .timeline-logo-light img {
+    transform: scale(1.25);
+    object-fit: contain;
   }
 
   .exp-card-wrapper {
@@ -824,6 +847,9 @@ section {
   z-index: 999;
   cursor: pointer;
   overflow: visible;
+  touch-action: none;
+  user-select: none;
+  -webkit-user-select: none;
 
   /* Default initial state */
   transform: scale(1);
@@ -853,6 +879,45 @@ section {
   50% {
     filter: drop-shadow(0 0 20px rgba(98, 224, 255, 0.6));
   }
+}
+
+/* Fullscreen Chase Mode (Desktop Goose Style) */
+.avatar-fixed-widget.avatar-fullscreen-chase {
+  position: fixed !important;
+  inset: 0 !important;
+  width: 100vw !important;
+  height: 100vh !important;
+  bottom: auto !important;
+  right: auto !important;
+  transform: none !important;
+  pointer-events: none !important;
+  z-index: 9999 !important;
+  cursor: default !important;
+  opacity: 1 !important;
+  visibility: visible !important;
+}
+
+.avatar-fixed-widget.avatar-fullscreen-chase .avatar-canvas-bleed {
+  position: absolute !important;
+  inset: 0 !important;
+  width: 100% !important;
+  height: 100% !important;
+  filter: none !important;
+  animation: none !important;
+}
+
+/* Floating speech bubble during fullscreen chase */
+.speech-bubble-chase {
+  position: fixed !important;
+  bottom: auto !important;
+  right: auto !important;
+  opacity: 1 !important;
+  visibility: visible !important;
+  pointer-events: none !important;
+  z-index: 10000 !important;
+  white-space: nowrap !important;
+  transform: translate(-50%, -100%) !important;
+  transition: transform 0.04s linear;
 }
 
 .speech-bubble {
@@ -892,6 +957,7 @@ section {
   max-width: min(210px, calc(100vw - 48px));
   line-height: 1.45;
   text-wrap: balance;
+  animation-delay: 0s;
 }
 
 @keyframes popInBubble {
