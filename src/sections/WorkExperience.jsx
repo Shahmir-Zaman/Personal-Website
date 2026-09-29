@@ -75,14 +75,31 @@ const WorkExperience = () => {
             {/* Separator */}
             <div className="w-full h-px bg-gradient-to-r from-transparent via-beacon/30 to-transparent mb-8" />
 
+            {/* Role Summary / Lead */}
+            {role.summary && (
+              <p className="work-highlight-item text-white-50/85 text-sm md:text-[15px] leading-[1.8] mb-8 font-normal">
+                {role.summary}
+              </p>
+            )}
+
             {/* Highlights */}
-            <div className="space-y-5">
-              {role.highlights.map((item, index) => (
-                <div key={index} className="work-highlight-item flex gap-4 items-start">
-                  <span className="mt-2 size-2 flex-none rounded-full bg-beacon/80 shadow-[0_0_8px_rgba(98,224,255,0.5)]" />
-                  <p className="text-white-50 text-base md:text-lg leading-relaxed">{item}</p>
-                </div>
-              ))}
+            <div className="space-y-6">
+              {role.highlights.map((item, index) => {
+                const colonIndex = item.indexOf(': ');
+                const hasPrefix = colonIndex > 0 && colonIndex < 45;
+                const title = hasPrefix ? item.slice(0, colonIndex + 1) : null;
+                const desc = hasPrefix ? item.slice(colonIndex + 2) : item;
+
+                return (
+                  <div key={index} className="work-highlight-item flex gap-4 items-start">
+                    <span className="mt-2.5 size-1.5 md:size-2 flex-none rounded-full bg-beacon/80 shadow-[0_0_8px_rgba(98,224,255,0.5)]" />
+                    <p className="text-white-50/85 text-sm md:text-[15px] leading-[1.8]">
+                      {title && <span className="font-semibold text-white mr-1.5">{title}</span>}
+                      {desc}
+                    </p>
+                  </div>
+                );
+              })}
             </div>
           </div>
         </div>

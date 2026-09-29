@@ -1,3 +1,7 @@
+// Must match MAX_HISTORY_TURNS / MAX_MESSAGE_LENGTH in api/chat.js, which rejects anything larger.
+const MAX_HISTORY_ENTRIES = 8;
+const MAX_PART_LENGTH = 2000;
+
 let localHistory = [];
 
 export async function sendMessage(userMessage) {
@@ -19,9 +23,12 @@ export async function sendMessage(userMessage) {
 
         const data = await response.json();
 
-        // Update local history with Gemini's required format
-        localHistory.push({ role: "user", parts: [{ text: userMessage }] });
-        localHistory.push({ role: "model", parts: [{ text: data.text }] });
+        // Entries are added in user/model pairs, so an even-sized tail always starts with a user turn, as Gemini requires.
+        localHistory = [
+            ...localHistory,
+            { role: "user", parts: [{ text: userMessage.slice(0, MAX_PART_LENGTH) }] },
+            { role: "model", parts: [{ text: String(data.text ?? "").slice(0, MAX_PART_LENGTH) }] },
+        ].slice(-MAX_HISTORY_ENTRIES);
 
         return { success: true, text: data.text };
     } catch (error) {

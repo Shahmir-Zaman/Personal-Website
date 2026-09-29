@@ -114,7 +114,7 @@ const ProjectQuickview = () => {
                       aria-label={`${card.title} — jump to the full project`}
                       className="expText project-link flex xl:gap-20 md:gap-10 gap-5 relative z-20"
                     >
-                      <div className="timeline-logo">
+                      <div className={`timeline-logo ${card.logoOnLight ? 'timeline-logo-light' : ''}`}>
                         <img src={card.logoPath} alt="" loading="lazy" />
                       </div>
                       <TimelineCard

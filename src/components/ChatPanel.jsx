@@ -198,6 +198,7 @@ const ChatPanel = ({ isOpen, onClose }) => {
                         onChange={(e) => setInput(e.target.value)}
                         onKeyDown={handleKeyDown}
                         placeholder="Type a message..."
+                        maxLength={2000}
                         className="chat-input"
                         disabled={isTyping}
                     />
