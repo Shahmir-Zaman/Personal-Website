@@ -2,8 +2,8 @@ import { navLinks } from '../constants'
 import React, { useEffect, useState } from 'react'
 
 const projectSubLinks = [
-  { name: 'Live Projects', link: '#projects' },
   { name: 'SmartBuild Case Study', link: '#mlcasestudy' },
+  { name: 'Live Projects', link: '#projects' },
 ];
 
 const NavBar = () => {

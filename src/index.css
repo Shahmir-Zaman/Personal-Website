@@ -1453,3 +1453,26 @@ section {
   }
 }
 
+
+/* --- Reduced motion ---------------------------------------------------------
+   GSAP tweens and 3D floats are handled in JS (lib/reducedMotion.js). This
+   covers the CSS side: the hero word slider holds on its first word, looping
+   glows stop, and transitions resolve almost instantly. */
+@media (prefers-reduced-motion: reduce) {
+  html,
+  body {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+
+  .wrapper {
+    animation: none;
+  }
+}

@@ -8,7 +8,8 @@ const Footer = () => {
                     {/* Was "Terms & Conditions" — plain text naming a document that
                         does not exist. It read as a link and went nowhere. A
                         colophon is true and earns the same grid cell. */}
-                    <p>Built with React, Three.js &amp; GSAP</p>
+                    <p>Germany &amp; UAE · CET / GST</p>
+                    <p className="text-sm text-white-50/60 mt-1">Built with React, Three.js &amp; GSAP</p>
                 </div>
                 <div className="socials">
                     {socialImgs.map((socialImg) => (

@@ -59,9 +59,12 @@ const Contact = () => {
     <section id="contact" className="flex-center section-padding mb-15">
       <div className="w-full h-full md:px-10 px-5">
         <TitleHeader
-          title="Get in Touch – Let’s Connect"
+          title="Get in Touch"
           sub="Open to roles, internships and freelance work"
         />
+        <p className="mt-5 text-center text-white-50/80 text-sm md:text-base">
+          Based in Germany &amp; the UAE · working across CET and GST (UTC+4) time zones
+        </p>
         <div className="grid-12-cols mt-16">
           <div className="xl:col-span-5">
             <div className="flex-center card-border rounded-xl p-10">
@@ -78,7 +81,7 @@ const Contact = () => {
                     name="name"
                     value={form.name}
                     onChange={handleChange}
-                    placeholder="What’s your good name?"
+                    placeholder="Your full name"
                     required
                   />
                 </div>

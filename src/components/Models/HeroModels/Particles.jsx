@@ -1,5 +1,6 @@
 import { useRef, useMemo } from "react";
 import { useFrame } from "@react-three/fiber";
+import { prefersReducedMotion } from "../../../lib/reducedMotion";
 
 const Particles = ({ count = 200 }) => {
   const mesh = useRef();
@@ -20,6 +21,7 @@ const Particles = ({ count = 200 }) => {
   }, [count]);
 
   useFrame(() => {
+    if (prefersReducedMotion) return;
     const positions = mesh.current.geometry.attributes.position.array;
     for (let i = 0; i < count; i++) {
       let y = positions[i * 3 + 1];

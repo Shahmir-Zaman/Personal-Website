@@ -9,7 +9,7 @@ const navLinks = [
   },
   {
     name: 'Projects',
-    link: '#projects',
+    link: '#mlcasestudy',
   },
 ];
 
@@ -102,7 +102,7 @@ const webExpCards = [
     stack: ['Next.js', 'TypeScript', 'Prisma', 'Supabase', 'OpenAI'],
     highlight: 'Accessible, responsive UI built on Radix primitives',
     imgPath: '/images/project1.webp',
-    liveUrl: 'https://notery.shahmirzaman.dev',
+    liveUrl: 'https://notery.shahmirzaman.me',
     repoUrl: 'https://github.com/Shahmir-Zaman/Notery',
     responsibilities: [
       'Developed a server-rendered note app with Next.js (App Router), React, and TypeScript.',
@@ -118,7 +118,7 @@ const webExpCards = [
     stack: ['React', 'TypeScript', 'Vite', 'n8n', 'GCP', 'Llama 3.2'],
     highlight: 'Self-hosted n8n + Llama 3.2 workflow running on GCP',
     imgPath: '/images/project2.webp',
-    liveUrl: 'https://sumai.shahmirzaman.dev',
+    liveUrl: 'https://sumai.shahmirzaman.me',
     repoUrl: 'https://github.com/Shahmir-Zaman/SumAI',
     responsibilities: [
       'Architected a fullstack AI document summarizer with React, TypeScript, Vite, and Tailwind CSS.',
@@ -134,7 +134,7 @@ const webExpCards = [
     stack: ['Node.js', 'Express', 'MongoDB', 'Passport.js', 'EJS'],
     highlight: 'Modular REST backend with Joi-validated middleware',
     imgPath: '/images/project3.webp',
-    liveUrl: 'https://roamaura.shahmirzaman.dev',
+    liveUrl: 'https://roamaura.shahmirzaman.me',
     repoUrl: 'https://github.com/Shahmir-Zaman/Roamaura',
     responsibilities: [
       'Architected a server-rendered fullstack platform with Node.js, Express, MongoDB, and EJS templates.',

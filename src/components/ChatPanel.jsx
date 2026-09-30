@@ -69,12 +69,20 @@ const ChatPanel = ({ isOpen, onClose }) => {
         messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
     }, [messages, isTyping]);
 
-    // Focus input when panel opens
+    // Focus the input on open; Escape closes; focus returns to whatever opened
+    // the panel (the avatar widget), so keyboard users are not dropped at the top.
     useEffect(() => {
-        if (isOpen) {
-            setTimeout(() => inputRef.current?.focus(), 400);
-        }
-    }, [isOpen]);
+        if (!isOpen) return;
+        const opener = document.activeElement;
+        const focusTimer = setTimeout(() => inputRef.current?.focus(), 400);
+        const onKeyDown = (e) => { if (e.key === "Escape") onClose(); };
+        window.addEventListener("keydown", onKeyDown);
+        return () => {
+            clearTimeout(focusTimer);
+            window.removeEventListener("keydown", onKeyDown);
+            if (opener instanceof HTMLElement && opener !== document.body) opener.focus();
+        };
+    }, [isOpen, onClose]);
 
     const handleSend = async (textToSend) => {
         const messageText = typeof textToSend === 'string' ? textToSend : input;
@@ -116,7 +124,7 @@ const ChatPanel = ({ isOpen, onClose }) => {
             className={`chat-overlay ${isOpen ? "chat-open" : ""}`}
             onClick={(e) => { if (e.target === e.currentTarget) onClose(); }}
         >
-            <div className="chat-panel">
+            <div className="chat-panel" role="dialog" aria-modal="true" aria-label="Chat with Shahmir's assistant" inert={!isOpen}>
                 {/* Gradient accent line */}
                 <div className="chat-gradient-bar" />
 

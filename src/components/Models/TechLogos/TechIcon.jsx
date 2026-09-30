@@ -1,6 +1,7 @@
 import { Environment, Float, OrbitControls, useGLTF, View } from "@react-three/drei";
 import { useEffect } from "react";
 import * as THREE from "three";
+import { prefersReducedMotion } from "../../../lib/reducedMotion";
 
 const TechIcon = ({ model }) => {
   const scene = useGLTF(model.modelPath);
@@ -28,7 +29,7 @@ const TechIcon = ({ model }) => {
         intensity={2}
       />
       <Environment preset="city" />
-      <Float speed={5.5} rotationIntensity={0.5} floatIntensity={0.9}>
+      <Float speed={prefersReducedMotion ? 0 : 5.5} rotationIntensity={0.5} floatIntensity={0.9}>
         <group
           scale={model.scale}
           rotation={model.rotation}

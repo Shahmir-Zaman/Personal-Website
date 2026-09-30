@@ -7,6 +7,7 @@ import { useGSAP } from "@gsap/react";
 import { Avatar } from "./Models/HeroModels/Avatar";
 import CanvasLoader from "./CanvasLoader";
 import { AVATAR_HINTS, DRAG_HINT, HINT_VISIBLE_MS, observeHints } from "../lib/avatarHints";
+import { prefersReducedMotion } from "../lib/reducedMotion";
 
 const AvatarCanvas = ({
     cameraZ = 5.4,
@@ -52,7 +53,7 @@ const AvatarCanvas = ({
             <directionalLight position={[-3, 3, 2]} intensity={isChasing ? 0.3 : 0.5} color="#a0c4ff" />
             <Environment preset="city" environmentIntensity={isChasing ? 0.5 : 1} />
             <Suspense fallback={<CanvasLoader />}>
-                <Float speed={isChasing ? 0 : floatSpeed} rotationIntensity={isChasing ? 0 : 0.02} floatIntensity={isChasing ? 0 : 0.15}>
+                <Float speed={isChasing || prefersReducedMotion ? 0 : floatSpeed} rotationIntensity={isChasing ? 0 : 0.02} floatIntensity={isChasing ? 0 : 0.15}>
                     <group ref={groupRef} position={avatarPosition} scale={0}>
                         <Avatar
                             isWidget={isWidget}
@@ -494,6 +495,14 @@ const AvatarWidget = ({ isWidget, onAvatarClick, isChatOpen }) => {
             onPointerUp={handlePointerUp}
             onPointerCancel={handlePointerUp}
             onPointerEnter={handlePointerEnter}
+            onKeyDown={(e) => {
+                if (e.key !== 'Enter' && e.key !== ' ') return;
+                e.preventDefault();
+                onAvatarClick?.();
+            }}
+            role="button"
+            tabIndex={isWidget && !isChatOpen && !isChasing ? 0 : -1}
+            aria-label="Open the chat with Shahmir's AI assistant"
             title="Chat with my AI mini-me!"
         >
             {isWidget && !isChatOpen && (

@@ -26,7 +26,9 @@ const App = () => {
             {/* Background Particles - Fixed behind all content (z-0) */}
             <div className="fixed inset-0 z-[0] pointer-events-none">
                 <Canvas camera={{ position: [0, 0, 15], fov: 45 }}>
-                    <Particles count={isMobile ? 80 : 150} />
+                    {/* Keyed by count: three.js cannot resize a GPU buffer in place, so
+                        crossing the breakpoint remounts the particles instead. */}
+                    <Particles key={isMobile ? 'mobile' : 'desktop'} count={isMobile ? 80 : 150} />
                 </Canvas>
             </div>
 
@@ -35,8 +37,8 @@ const App = () => {
                 <Hero />
                 <TechStack />
                 <WorkExperience />
-                <ShowcaseSection />
                 <MLCaseStudy />
+                <ShowcaseSection />
                 <Contact />
                 <Footer />
             </div>

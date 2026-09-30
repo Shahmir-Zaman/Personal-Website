@@ -67,9 +67,9 @@ Model quality and shipped applications are supporting evidence for this position
 
 **Live, verifiable projects** — each has both a working deployment and a public repository:
 
-- Notery — https://notery.shahmirzaman.dev · https://github.com/Shahmir-Zaman/Notery
-- SumAI — https://sumai.shahmirzaman.dev · https://github.com/Shahmir-Zaman/SumAI
-- RoamAura — https://roamaura.shahmirzaman.dev · https://github.com/Shahmir-Zaman/Roamaura
+- Notery — https://notery.shahmirzaman.me · https://github.com/Shahmir-Zaman/Notery
+- SumAI — https://sumai.shahmirzaman.me · https://github.com/Shahmir-Zaman/SumAI
+- RoamAura — https://roamaura.shahmirzaman.me · https://github.com/Shahmir-Zaman/Roamaura
 
 **SmartBuild case study** — the deepest proof asset, with source material in the repo:
 

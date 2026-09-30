@@ -19,7 +19,7 @@ const intro = <>Acting as <strong className="text-white font-semibold">data scie
 // the down colour. The label carries the meaning; the colour carries the sign.
 const metrics = [
     { value: "€126,520", label: "Net savings per batch", tone: "up" },
-    { value: "0.99+", label: "Model accuracy (R²)", tone: "flat" },
+    { value: "0.99+", label: "Model fit (R²)", tone: "flat" },
     { value: "−83%", label: "Cut in defect costs", tone: "down" },
 ];
 
@@ -57,7 +57,7 @@ const buildStoryBeats = (goToSlide) => [
     {
         step: "Task 01 — Quality Assurance",
         title: "Predicting Weight Before It's Built",
-        body: <>To guarantee product consistency, we first had to predict a unit's final weight from the machine's input settings. A <strong className="text-white font-semibold">Linear Regression</strong> scored an R² of 0.98 — great on paper, but its <SlideRef slide={4} onGo={goToSlide}>residuals</SlideRef> hid a systematic U-shape bias. The cause: physical volume is multiplicative (length × width × height), so a straight-line model can't capture the machine's physics. Moving to <SlideRef slide={5} onGo={goToSlide}>Polynomial Regression</SlideRef> erased that bias and lifted accuracy past R² 0.99 — letting SmartBuild certify quality mathematically, before a single unit ships.</>,
+        body: <>To guarantee product consistency, we first had to predict a unit's final weight from the machine's input settings. A <strong className="text-white font-semibold">Linear Regression</strong> scored an R² of 0.98 — great on paper, but its <SlideRef slide={4} onGo={goToSlide}>residuals</SlideRef> hid a systematic U-shape bias. The cause: physical volume is multiplicative (length × width × height), so a straight-line model can't capture the machine's physics. Moving to <SlideRef slide={5} onGo={goToSlide}>Polynomial Regression</SlideRef> erased that bias and lifted the fit past R² 0.99 — letting SmartBuild certify quality mathematically, before a single unit ships.</>,
     },
     {
         step: "Task 02 — The Profit Driver",

@@ -7,7 +7,7 @@ import { useGSAP } from '@gsap/react'
 import gsap from 'gsap'
 import AvatarWidget from '../components/AvatarWidget.jsx'
 import ChatPanel from '../components/ChatPanel.jsx'
-import { useState } from 'react'
+import { useCallback, useState } from 'react'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import { useMediaQuery } from 'react-responsive'
 
@@ -46,9 +46,11 @@ const Hero = () => {
         setIsChatOpen(true);
     };
 
-    const handleChatClose = () => {
+    // Stable identity: ChatPanel's open effect depends on it, and re-running that
+    // effect mid-conversation would move keyboard focus.
+    const handleChatClose = useCallback(() => {
         setIsChatOpen(false);
-    };
+    }, []);
 
     return (
         <section id='hero' className={`relative overflow-hidden ${isChatOpen ? 'chat-active' : ''}`}>

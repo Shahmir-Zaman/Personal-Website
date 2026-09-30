@@ -13,6 +13,7 @@ import { Room } from "./Room";
 import HeroLights from "./HeroLights";
 import Particles from "./Particles";
 import { Avatar } from "./Avatar";
+import { prefersReducedMotion } from "../../../lib/reducedMotion";
 
 const HeroExperience = ({ isWidget, isChatOpen, onAvatarClick }) => {
   const isMobile = useMediaQuery({ query: "(max-width: 768px)" });
@@ -80,7 +81,7 @@ const HeroExperience = ({ isWidget, isChatOpen, onAvatarClick }) => {
 
           {/* The Avatar in the same scene, GSAP controlled ref */}
           <group ref={avatarGroup} position={avatarPosition} scale={avatarScale} rotation={[0, Math.PI / 12, 0]}>
-            <Float speed={1.5} rotationIntensity={0.02} floatIntensity={0.15}>
+            <Float speed={prefersReducedMotion ? 0 : 1.5} rotationIntensity={0.02} floatIntensity={0.15}>
               <Avatar isHero={true} isWidget={isWidget} isChatOpen={isChatOpen} onClick={onAvatarClick} />
             </Float>
           </group>
