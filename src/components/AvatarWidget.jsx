@@ -111,24 +111,22 @@ const AvatarWidget = ({ isWidget, onAvatarClick, isChatOpen }) => {
         const screenHeight = typeof window !== 'undefined' ? (window.innerHeight || document.documentElement.clientHeight) : 1080;
         const widgetWidth = dragRef.current ? dragRef.current.offsetWidth : 120;
         const widgetHeight = dragRef.current ? dragRef.current.offsetHeight : 200;
+        // The docking margin comes from the CSS (24px desktop, 12px phones), so
+        // the same gap is kept on the far edges when the widget is dragged.
+        const style = dragRef.current ? getComputedStyle(dragRef.current) : null;
+        const marginX = style ? parseFloat(style.right) || 24 : 24;
+        const marginY = style ? parseFloat(style.bottom) || 24 : 24;
 
-        // Base CSS: right: 24px, bottom: 24px
-        // pos.x = 0 is docked right (24px padding from right viewport edge).
-        // Dragging left means pos.x < 0.
-        // Farthest left position leaves 24px padding from left viewport edge:
-        const minX = -(screenWidth - widgetWidth - 48);
+        // pos.x = 0 is docked right; dragging left makes pos.x negative.
+        const minX = -(screenWidth - widgetWidth - marginX * 2);
         const maxX = 0;
 
-        // Base CSS: bottom: 24px.
-        // pos.y = 0 is docked bottom (24px padding from bottom viewport edge).
-        // Dragging DOWNWARDS would mean pos.y > 0, which pushes the avatar below the bottom edge!
-        // Therefore, maxY is strictly 0: the avatar can NEVER be dragged below the screen bottom.
-        // Dragging UPWARDS means pos.y < 0.
-        // Farthest up position leaves 24px padding from top viewport edge:
-        const minY = -(screenHeight - widgetHeight - 48);
+        // pos.y = 0 is docked bottom and maxY stays 0, so the avatar can never be
+        // dragged below the screen; dragging up makes pos.y negative.
+        const minY = -(screenHeight - widgetHeight - marginY * 2);
         const maxY = 0;
 
-        return { minX, maxX, minY, maxY, screenWidth, screenHeight, widgetWidth, widgetHeight };
+        return { minX, maxX, minY, maxY, screenWidth, screenHeight, widgetWidth, widgetHeight, marginX, marginY };
     }, []);
 
     const handleScreenPosUpdate = useCallback((px, py) => {
@@ -478,9 +476,11 @@ const AvatarWidget = ({ isWidget, onAvatarClick, isChatOpen }) => {
 
     if (!mounted) return null;
 
+    // Centre of the docked widget in screen pixels, where chase mode starts and returns to.
+    const { screenWidth, screenHeight, widgetWidth, widgetHeight, marginX, marginY } = getBounds();
     const widgetOrigin = {
-        x: (typeof window !== 'undefined' ? window.innerWidth : 1920) - 84 + pos.current.x,
-        y: (typeof window !== 'undefined' ? window.innerHeight : 1080) - 124 + pos.current.y,
+        x: screenWidth - marginX - widgetWidth / 2 + pos.current.x,
+        y: screenHeight - marginY - widgetHeight / 2 + pos.current.y,
     };
 
     return createPortal(

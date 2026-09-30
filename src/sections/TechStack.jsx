@@ -27,7 +27,7 @@ const TechStack = () => {
         ease: "power2.inOut", // Ease of the animation
         stagger: 0.2, // Stagger the animation by 0.2 seconds
         scrollTrigger: {
-          trigger: "#techstack", // Trigger the animation when the user scrolls to the #skills wrapper
+          trigger: "#techstack",
           start: "top center", // Start the animation when the top of the wrapper is at the center of the screen
         },
       }
@@ -54,6 +54,7 @@ const TechStack = () => {
                 </div>
                 <div className="padding-x w-full">
                   <p>{techStackIcon.name}</p>
+                  <span className="tech-tools">{techStackIcon.tools}</span>
                 </div>
               </div>
             </div>

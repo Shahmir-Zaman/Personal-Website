@@ -16,17 +16,27 @@ import { Avatar } from "./Avatar";
 
 const HeroExperience = ({ isWidget, isChatOpen, onAvatarClick }) => {
   const isMobile = useMediaQuery({ query: "(max-width: 768px)" });
+  // Below Tailwind's xl breakpoint the hero stacks and the scene gets its own full-width canvas.
+  const isStacked = useMediaQuery({ maxWidth: 1279 });
   const avatarGroup = useRef();
   const containerRef = useRef();
   const [inView, setInView] = useState(true);
 
+  // The avatar's scale and offset from the room's origin follow the room's scale,
+  // so he stays standing on the same spot of the floor at any size.
+  const roomScale = isMobile ? 1.05 : 1;
+  // When stacked the scene has the canvas to itself, so the room is centred in it.
+  const roomPosition = isStacked ? [0, -2, 0] : [-1, -2.5, 0];
+  const avatarOffset = [-0.9, 0.4, 2.5];
+  const avatarPosition = roomPosition.map((v, i) => v + avatarOffset[i] * roomScale);
+  const avatarScale = 1.5 * roomScale;
+
   useGSAP(() => {
     if (avatarGroup.current) {
-      // Smoothly scale the 3D model down to 0 or up to 1.5 based on widget state
       gsap.to(avatarGroup.current.scale, {
-        x: isWidget ? 0 : 1.5,
-        y: isWidget ? 0 : 1.5,
-        z: isWidget ? 0 : 1.5,
+        x: isWidget ? 0 : avatarScale,
+        y: isWidget ? 0 : avatarScale,
+        z: isWidget ? 0 : avatarScale,
         duration: 0.5,
         ease: "back.inOut(1.7)"
       });
@@ -39,7 +49,7 @@ const HeroExperience = ({ isWidget, isChatOpen, onAvatarClick }) => {
       end: "bottom top",
       onToggle: (self) => setInView(self.isActive),
     });
-  }, [isWidget]);
+  }, [isWidget, avatarScale]);
 
   return (
     <div ref={containerRef} className="w-full h-full">
@@ -61,15 +71,15 @@ const HeroExperience = ({ isWidget, isChatOpen, onAvatarClick }) => {
           <HeroLights />
           <Particles count={100} />
           <group
-            scale={isMobile ? 0.7 : 1}
-            position={[-1, -2.5, 0]}
+            scale={roomScale}
+            position={roomPosition}
             rotation={[0, -Math.PI / 4, 0]}
           >
             <Room />
           </group>
 
           {/* The Avatar in the same scene, GSAP controlled ref */}
-          <group ref={avatarGroup} position={[-1.9, -2.1, 2.5]} scale={1.5} rotation={[0, Math.PI / 12, 0]}>
+          <group ref={avatarGroup} position={avatarPosition} scale={avatarScale} rotation={[0, Math.PI / 12, 0]}>
             <Float speed={1.5} rotationIntensity={0.02} floatIntensity={0.15}>
               <Avatar isHero={true} isWidget={isWidget} isChatOpen={isChatOpen} onClick={onAvatarClick} />
             </Float>

@@ -10,11 +10,6 @@
 // the widget.
 export const AVATAR_HINTS = [
   {
-    id: 'quickview',
-    target: '#project-quickview',
-    text: 'Tap any project to jump to its full write-up ↓',
-  },
-  {
     id: 'featured',
     target: '#projects',
     text: 'Every project here has a live site and a public repo',
