@@ -112,7 +112,10 @@ const ChatPanel = ({ isOpen, onClose }) => {
     };
 
     return createPortal(
-        <div className={`chat-overlay ${isOpen ? "chat-open" : ""}`}>
+        <div
+            className={`chat-overlay ${isOpen ? "chat-open" : ""}`}
+            onClick={(e) => { if (e.target === e.currentTarget) onClose(); }}
+        >
             <div className="chat-panel">
                 {/* Gradient accent line */}
                 <div className="chat-gradient-bar" />

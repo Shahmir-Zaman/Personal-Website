@@ -6,10 +6,8 @@ import { View } from '@react-three/drei'
 import Particles from './components/Models/HeroModels/Particles.jsx'
 import { useMediaQuery } from 'react-responsive'
 import NavBar from './components/NavBar.jsx'
-import FeatureCards from './sections/FeatureCards.jsx'
 import TechStack from './sections/TechStack.jsx'
 import WorkExperience from './sections/WorkExperience.jsx'
-import ProjectQuickview from './sections/ProjectQuickview.jsx'
 import Contact from './sections/Contact.jsx'
 import Footer from './sections/Footer.jsx'
 import { useRef } from 'react'
@@ -37,10 +35,8 @@ const App = () => {
                 <Hero />
                 <TechStack />
                 <WorkExperience />
-                <ProjectQuickview />
                 <ShowcaseSection />
                 <MLCaseStudy />
-                <FeatureCards />
                 <Contact />
                 <Footer />
             </div>

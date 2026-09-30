@@ -168,6 +168,16 @@ export function Avatar({
     return () => window.removeEventListener('pointermove', handleMove)
   }, [])
 
+  // Touch screens have no hovering cursor to follow, so the head rests facing forward.
+  const hasCursor = React.useRef(true)
+  useEffect(() => {
+    const query = window.matchMedia('(hover: hover) and (pointer: fine)')
+    const update = () => { hasCursor.current = query.matches }
+    update()
+    query.addEventListener('change', update)
+    return () => query.removeEventListener('change', update)
+  }, [])
+
   // Runs at default priority, which registers AFTER drei's animation mixer, so
   // this offset is applied on top of whatever animation pose is playing.
   useFrame((state, delta) => {
@@ -334,22 +344,24 @@ export function Avatar({
     let targetPitch = 0
 
     if (animationName === "Idle") {
-      headBone.getWorldPosition(_headPos)
-      _headPos.project(state.camera)
+      if (hasCursor.current) {
+        headBone.getWorldPosition(_headPos)
+        _headPos.project(state.camera)
 
-      // Map canvas NDC to absolute screen pixels
-      const rect = state.gl.domElement.getBoundingClientRect()
-      const headPixelX = rect.left + (_headPos.x * 0.5 + 0.5) * rect.width
-      const headPixelY = rect.top + (-_headPos.y * 0.5 + 0.5) * rect.height
+        // Map canvas NDC to absolute screen pixels
+        const rect = state.gl.domElement.getBoundingClientRect()
+        const headPixelX = rect.left + (_headPos.x * 0.5 + 0.5) * rect.width
+        const headPixelY = rect.top + (-_headPos.y * 0.5 + 0.5) * rect.height
 
-      // Calculate relative cursor position as a fraction of half-window size for full responsiveness
-      const halfW = (window.innerWidth || 1920) * 0.5
-      const halfH = (window.innerHeight || 1080) * 0.5
-      const relX = (globalPointer.current.x - headPixelX) / halfW
-      const relY = (globalPointer.current.y - headPixelY) / halfH
+        // Calculate relative cursor position as a fraction of half-window size for full responsiveness
+        const halfW = (window.innerWidth || 1920) * 0.5
+        const halfH = (window.innerHeight || 1080) * 0.5
+        const relX = (globalPointer.current.x - headPixelX) / halfW
+        const relY = (globalPointer.current.y - headPixelY) / halfH
 
-      targetYaw = THREE.MathUtils.clamp(relX * MAX_YAW, -MAX_YAW, MAX_YAW) * YAW_DIR
-      targetPitch = THREE.MathUtils.clamp(relY * MAX_PITCH, -MAX_PITCH, MAX_PITCH) * PITCH_DIR
+        targetYaw = THREE.MathUtils.clamp(relX * MAX_YAW, -MAX_YAW, MAX_YAW) * YAW_DIR
+        targetPitch = THREE.MathUtils.clamp(relY * MAX_PITCH, -MAX_PITCH, MAX_PITCH) * PITCH_DIR
+      }
 
       look.current.yaw = THREE.MathUtils.damp(look.current.yaw, targetYaw, LOOK_LAMBDA, delta)
       look.current.pitch = THREE.MathUtils.damp(look.current.pitch, targetPitch, LOOK_LAMBDA, delta)

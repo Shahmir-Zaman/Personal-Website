@@ -2,9 +2,8 @@ import { navLinks } from '../constants'
 import React, { useEffect, useState } from 'react'
 
 const projectSubLinks = [
-  { name: 'Project Quickview', link: '#project-quickview' },
-  { name: 'Featured Projects', link: '#projects' },
-  { name: 'ML Case Study', link: '#mlcasestudy' },
+  { name: 'Live Projects', link: '#projects' },
+  { name: 'SmartBuild Case Study', link: '#mlcasestudy' },
 ];
 
 const NavBar = () => {

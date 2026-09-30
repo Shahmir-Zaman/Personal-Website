@@ -146,7 +146,7 @@ section {
   }
 
   .hero-layout {
-    @apply relative z-10 xl:mt-20 mt-32 min-h-screen flex xl:items-center items-start justify-center pb-20;
+    @apply relative z-10 xl:mt-20 md:mt-32 mt-40 xl:min-h-screen flex xl:items-center items-start justify-center pb-4 xl:pb-20;
   }
 
   .hero-text {
@@ -161,6 +161,35 @@ section {
     }
   }
 
+  /* Proof line under the hero intro. The figure is the one Impact Green on
+     this screen (The Green Means Money Rule). */
+  .hero-proof {
+    @apply relative z-20 inline-flex flex-wrap items-baseline gap-x-2 gap-y-1 w-fit max-w-xl min-h-11 py-2 text-base md:text-lg leading-snug;
+  }
+
+  .hero-proof-figure {
+    @apply font-semibold text-[#22c55e] underline decoration-[#22c55e]/40 underline-offset-4 transition-colors duration-300;
+  }
+
+  .hero-proof:hover .hero-proof-figure,
+  .hero-proof:focus-visible .hero-proof-figure {
+    @apply decoration-[#22c55e];
+  }
+
+  .hero-proof-arrow {
+    @apply inline-block text-beacon transition-transform duration-300 group-hover:translate-x-1;
+  }
+
+  /* Hero duplicates of the nav's CV and Contact buttons. From lg up the nav
+     shows them, so they are only needed where the nav collapses to a menu. */
+  .hero-secondary-cta {
+    @apply lg:hidden relative z-20 inline-flex items-center justify-center h-12 md:h-16 px-7 rounded-lg border border-white/15 text-white-50 md:text-lg transition-colors duration-300 hover:border-beacon hover:text-white;
+  }
+
+  .hero-cv-link {
+    @apply lg:hidden relative z-20 inline-flex items-center min-h-11 text-white-50/80 underline decoration-white/30 underline-offset-4 transition-colors duration-300 hover:text-white hover:decoration-beacon;
+  }
+
   .hero-badge {
     @apply bg-black-200 py-2 px-4 rounded-full w-fit text-sm md:text-base text-nowrap;
   }
@@ -170,14 +199,16 @@ section {
   }
 
   .navbar {
-    @apply fixed w-full left-1/2 py-5 px-5 md:px-20 -translate-x-1/2 z-[100] transition-all duration-300 ease-in-out top-0;
+    /* Only `top` animates. A fading background would leave the bar see-through
+       while it slides over content, so the black switches on instantly. */
+    @apply fixed inset-x-0 py-5 px-5 md:px-20 z-[100] transition-[top] duration-300 ease-in-out top-0;
 
     &.scrolled {
       @apply top-0 bg-black;
     }
 
     &.not-scrolled {
-      @apply md:top-10 top-0 bg-transparent;
+      @apply md:top-10 top-5 bg-transparent;
     }
 
     .inner {
@@ -347,45 +378,6 @@ section {
     @apply border border-black-50 bg-black-100;
   }
 
-  .marquee-item {
-    @apply md:w-40 w-32;
-  }
-
-  .timeline-wrapper {
-    @apply absolute top-0 xl:left-[21.4vw] md:left-10 left-5 h-full flex justify-center;
-  }
-
-  .timeline {
-    @apply absolute z-30 h-[110%] -top-10 w-14 md:w-28 bg-black;
-  }
-
-  .timeline-logo {
-    @apply md:size-20 size-10 flex-none rounded-full flex justify-center items-center md:-translate-y-7 border border-black-50 bg-black-100;
-  }
-
-  /* A white plate for dark logo marks.
-     TUNE HERE: `padding` controls breathing room inside the circle and the
-     `scale` on the image controls how large the mark reads. Less padding +
-     higher scale = more zoomed in. */
-  .timeline-logo-light {
-    @apply bg-white p-1 md:p-1.5;
-    border-color: rgba(255, 255, 255, 0.25);
-    overflow: hidden;
-  }
-
-  .timeline-logo-light img {
-    transform: scale(1.25);
-    object-fit: contain;
-  }
-
-  .exp-card-wrapper {
-    @apply flex flex-col-reverse xl:flex-row xl:gap-20 gap-10 justify-between;
-  }
-
-  .gradient-edge {
-    @apply w-36 h-full absolute bottom-0 z-20;
-  }
-
   .tech-card-animated-bg {
     @apply absolute left-0 bottom-[-100%] w-full h-full bg-[#2D3240] group-hover:bottom-0 transition-all duration-700;
   }
@@ -396,6 +388,10 @@ section {
     & p {
       @apply text-lg 2xl:text-2xl pb-5 xl:pb-0 font-semibold text-white-50 text-center;
     }
+  }
+
+  .tech-tools {
+    @apply block pb-5 xl:pb-0 -mt-3 xl:mt-2 text-sm text-blue-50 text-center leading-snug;
   }
 
   .tech-grid {
@@ -449,36 +445,9 @@ section {
     }
   }
 
-  /* Cyber Editorial Tabs */
-  .cyber-tabs-container {
-    @apply border-b border-white/10;
-  }
-
-  .cyber-tab {
-    @apply relative pt-3 pb-4 md:text-xl text-lg font-semibold uppercase tracking-widest text-[#839CB5] transition-colors duration-300;
-  }
-
-  .cyber-tab:hover {
-    @apply text-white-50;
-  }
-
-  .cyber-tab.active {
-    @apply text-[#62e0ff] drop-shadow-[0_0_8px_rgba(98,224,255,0.4)];
-  }
-
-  .cyber-tab::after {
-    content: '';
-    @apply absolute bottom-0 left-0 w-full h-[2px] bg-gradient-to-r from-transparent via-[#62e0ff] to-transparent scale-x-0 transition-transform duration-500 origin-center opacity-0;
-    box-shadow: 0px 4px 12px rgba(98, 224, 255, 0.8);
-  }
-
-  .cyber-tab.active::after {
-    @apply scale-x-100 opacity-100;
-  }
-
   /* Work Experience — single premium card */
   .work-hero-card {
-    @apply relative rounded-2xl p-8 md:p-10;
+    @apply relative rounded-2xl p-5 md:p-10;
     /* Only border-color and box-shadow change on :hover, so the transition is
        scoped to those. A blanket `transition-all` also intercepts the opacity
        and transform that GSAP writes inline every frame during the scroll-in,
@@ -492,6 +461,10 @@ section {
     box-shadow:
       0 0 0 1px rgba(255, 255, 255, 0.03) inset,
       0 20px 50px rgba(0, 0, 0, 0.3);
+  }
+
+  .education-row {
+    @apply border-t border-white/10 pt-8 md:pt-10 px-1 md:px-10;
   }
 
   .work-hero-card:hover {
@@ -552,9 +525,9 @@ section {
   color: #ffffff;
 }
 
-/* --- Project Quickview cards --- */
+/* --- Project cards --- */
 
-/* Eyebrow above the project name. Uppercase is only permitted at label size
+/* Small label above the project name. Uppercase is only permitted at label size
    (DESIGN.md, The Label Whisper Rule). */
 .project-kind {
   font-size: 12px;
@@ -584,58 +557,6 @@ section {
 /* Impact Green is reserved for a real quantified business result. */
 .project-highlight-metric {
   color: #22c55e;
-}
-
-/* --- Project Quickview -> Featured Projects link --- */
-
-.project-link {
-  cursor: pointer;
-  border-radius: 12px;
-  transition: transform 300ms ease;
-}
-
-.project-link:hover {
-  transform: translateX(4px);
-}
-
-.project-cue {
-  color: #62e0ff;
-  opacity: 0.75;
-  transition: opacity 300ms ease;
-}
-
-.project-link:hover .project-cue,
-.project-link:focus-visible .project-cue {
-  opacity: 1;
-}
-
-.project-cue-arrow {
-  transition: transform 300ms ease;
-}
-
-.project-link:hover .project-cue-arrow {
-  transform: translateY(3px);
-}
-
-/* Flash the destination so it is obvious which card the click landed on.
-   Driven by scrollToProject(), which adds and removes .project-flash. */
-@keyframes projectFlash {
-  0% {
-    box-shadow:
-      0 0 0 2px rgba(98, 224, 255, 0.9),
-      0 0 40px rgba(98, 224, 255, 0.45);
-  }
-
-  100% {
-    box-shadow:
-      0 0 0 2px rgba(98, 224, 255, 0),
-      0 0 40px rgba(98, 224, 255, 0);
-  }
-}
-
-.project-flash {
-  border-radius: 12px;
-  animation: projectFlash 1.4s ease-out;
 }
 
 /* --- ML Case Study Styles --- */
@@ -706,78 +627,6 @@ section {
 }
 
 /* Hero Text slider ends */
-
-.gradient-line {
-  width: 2px;
-  background: linear-gradient(0deg,
-      rgba(69, 222, 196, 0) 0%,
-      #62e0ff 25%,
-      #52aeff 37.51%,
-      #fd5c79 62.83%,
-      #6d45ce 92.91%);
-}
-
-/* Horizontal separator line */
-.section-separator {
-  width: 100%;
-  max-width: 500px;
-  height: 3px;
-  background: linear-gradient(90deg,
-      rgba(69, 222, 196, 0) 0%,
-      #62e0ff 25%,
-      #52aeff 37.51%,
-      #fd5c79 62.83%,
-      #6d45ce 92.91%,
-      rgba(69, 222, 196, 0) 100%);
-}
-
-.gradient-edge:nth-of-type(1) {
-  left: 0;
-  background: rgb(0, 0, 0);
-  background: linear-gradient(90deg,
-      rgba(0, 0, 0, 1) 0%,
-      rgba(255, 255, 255, 0) 100%);
-}
-
-.gradient-edge:nth-of-type(2) {
-  right: 0;
-  background: linear-gradient(-90deg,
-      rgba(0, 0, 0, 1) 0%,
-      rgba(255, 255, 255, 0) 100%);
-}
-
-/* marquee */
-.marquee {
-  width: 100dvw;
-  overflow: hidden;
-  position: relative;
-}
-
-.marquee-box {
-  display: flex;
-  align-items: center;
-  width: 200%;
-  height: 100%;
-  position: absolute;
-  overflow: hidden;
-  animation: marquee 60s linear infinite;
-}
-
-.marquee-item {
-  float: left;
-}
-
-@keyframes marquee {
-  0% {
-    left: 0;
-  }
-
-  100% {
-    left: -100%;
-  }
-}
-
-/* marquee end */
 
 .card {
   --start: 0;
@@ -878,6 +727,21 @@ section {
 
   50% {
     filter: drop-shadow(0 0 20px rgba(98, 224, 255, 0.6));
+  }
+}
+
+/* Phones: a smaller companion tucked closer to the corner, so it covers less
+   of the content it floats over. The avatar scales with the canvas box. */
+@media (max-width: 768px) {
+  .avatar-fixed-widget {
+    width: 80px;
+    height: 136px;
+    bottom: 12px;
+    right: 12px;
+  }
+
+  .avatar-canvas-bleed {
+    inset: -20px;
   }
 }
 
@@ -1452,21 +1316,31 @@ section {
 }
 
 /* Mobile responsive */
+/* Phones: a floating card over the dimmed page rather than a full-screen
+   takeover, so the visitor still sees where they are. It rises from the bottom,
+   where the avatar that opened it lives. */
 @media (max-width: 480px) {
   .chat-overlay {
-    padding: 0;
+    padding: 12px 12px max(12px, env(safe-area-inset-bottom));
     align-items: flex-end;
+    justify-content: center;
+    background: rgba(0, 0, 0, 0);
+    transition: opacity 0.3s ease, background-color 0.3s ease;
+  }
+
+  .chat-overlay.chat-open {
+    background: rgba(0, 0, 0, 0.55);
   }
 
   .chat-panel {
     width: 100%;
-    height: 100dvh;
-    border-radius: 0;
-    max-width: 100%;
+    height: min(560px, 72dvh);
+    border-radius: 20px;
+    transform: translateY(110%) scale(0.96);
   }
 
   .chat-open .chat-panel {
-    transform: translateX(0) translateY(0) scale(1);
+    transform: translateY(0) scale(1);
   }
 }
 
