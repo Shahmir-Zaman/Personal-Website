@@ -173,13 +173,13 @@ const workExperience = [
     date: '2026 - Present',
     logoPath: '/images/logos/infinix_innovations_logo.webp',
     summary:
-      'Building real-time AI systems for live exhibitions and automating internal business workflows — from conversational video avatars and computer-vision installations to RAG voice assistants and sales automation.',
+      'I build real-time AI installations for live exhibitions and automate internal business workflows. Most of it runs on local hardware.',
     highlights: [
-      'Real-Time AI Video Avatars: Built a locally hosted conversational chatbot with a live-streaming video avatar. The pipeline links local LLMs to a text-to-speech engine and lip-syncs the avatar to the generated audio in real time.',
-      'Interactive Exhibition Systems: Developed and deployed 15+ zero-downtime, multi-display applications, including immersive VR and high-traffic UI systems in Unity and TouchDesigner, which handled 30,000+ live visitor interactions at industry exhibitions.',
-      'Computer Vision Pipelines: Built real-time generative computer-vision workflows with StreamDiffusion, ComfyUI and TensorRT, tuning inference latency so live camera feeds turn into interactive AI art at event installations.',
-      'RAG Voice Assistants: Developed retrieval-augmented voice assistants that connect vector databases and LLMs to 3D avatars, served over WebSockets and REST to React/Next.js front-ends.',
-      'Process Automation: Built internal automation with n8n, Python and webhooks, including a quotation generator and automated CRM follow-ups that cut manual sales work.',
+      'Talking video avatar: A chatbot that answers out loud through a lip-synced video avatar, running entirely on local machines (local LLM → text-to-speech → real-time lip-sync).',
+      'Exhibition apps: Shipped 15+ multi-display and VR apps in Unity and TouchDesigner that ran without downtime at industry exhibitions and handled 30,000+ visitor interactions.',
+      'Live AI art: Turned live camera feeds into AI-generated art in real time for event installations, using StreamDiffusion, ComfyUI and TensorRT to keep latency low.',
+      'Voice assistants: RAG voice assistants that answer from a custom knowledge base, connected to 3D avatars and React/Next.js front-ends over WebSockets and REST.',
+      'Sales automation: A quotation generator and automated CRM follow-ups built with n8n, Python and webhooks, reducing manual sales overhead.',
     ],
   }
 ];
